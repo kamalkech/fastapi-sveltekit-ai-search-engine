@@ -77,7 +77,8 @@
 
 	const textToSpeech = async () => {
 		loading = true;
-		const response = await fetch('/api/speech', {
+		// const response = await fetch('/api/speech', {
+		const response = await fetch('/api/text-to-speech', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

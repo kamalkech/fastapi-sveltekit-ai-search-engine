@@ -15,9 +15,6 @@ RUN npm prune --production
 # Prod
 FROM node:18-alpine AS production
 
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && apt-get update -y && apt-get install google-cloud-sdk -y
-    
-
 WORKDIR /app
 
 COPY --from=builder /app/build build/

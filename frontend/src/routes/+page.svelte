@@ -59,16 +59,21 @@
 	};
 
 	const sendQuestion = async () => {
-		const key = localStorage.getItem('openai_key') || '';
-		if (!key || key === '') {
-			alert('Please enter a valid openai key');
-			return;
-		}
+		try {
+			const key = localStorage.getItem('openai_key') || '';
+			if (!key || key === '') {
+				alert('Please enter a valid openai key');
+				return;
+			}
 
-		text = '';
-		loading = true;
-		await Promise.all([getText()]);
-		loading = false;
+			text = '';
+			loading = true;
+			await Promise.all([getText()]);
+			loading = false;
+		} catch (error) {
+			console.error(error);
+			loading = false;
+		}
 	};
 
 	const textToSpeech = async () => {

@@ -41,6 +41,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@google-cloud/text-to-speech": "^5.0.1",
 		"openai": "^4.24.1"
 	}
 }

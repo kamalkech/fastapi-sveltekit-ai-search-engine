@@ -41,7 +41,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"openai": "^4.24.1",
-		"svelte-markdown": "^0.4.1"
+		"openai": "^4.24.1"
 	}
 }

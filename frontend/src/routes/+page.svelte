@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	// import SvelteMarkdown from 'svelte-markdown';
 	import IconSettings from '$lib/components/icons/icon-settings.svelte';
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
@@ -224,7 +223,7 @@
 		background-color: inherit;
 	}
 	.image-full {
-		background-image: url('/bg3.png');
+		background-image: url('/bg.png');
 		background-position: center;
 		background-size: cover;
 		opacity: 0.7;

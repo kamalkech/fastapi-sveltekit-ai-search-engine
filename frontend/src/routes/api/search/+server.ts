@@ -1,6 +1,4 @@
-/** @type {import('./$types').RequestHandler} */
 const url = 'http://backend:3333/search_stream';
-// const url = 'http://127.0.0.1:8000/search_stream';
 
 export async function POST({ cookies, request }) {
 	try {

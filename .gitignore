@@ -1,0 +1,47 @@
+# start backend
+/backend/.idea
+/backend/.ipynb_checkpoints
+/backend/.mypy_cache
+/backend/.vscode
+/backend/__pycache__
+/backend/.pytest_cache
+/backend/htmlcov
+/backend/dist
+/backend/site
+/backend/.coverage
+/backend/coverage.xml
+/backend/.netlify
+/backend/test.db
+/backend/log.txt
+/backend//backend/Pipfile.lock
+/backend/env3.*
+/backend/env
+/backend/.env
+/backend/docs_build
+/backend/site_build
+/backend/venv
+/backend/docs.zip
+/backend/archive.zip
+# vim temporary files
+/backend/*~
+/backend/.*.sw?
+/backend/.cache
+# macOS
+/backend/.DS_Store
+# end backend
+
+# start frontend
+/frontend/.DS_Store
+/frontend/node_modules
+/frontend/build
+/frontend/.svelte-kit
+/frontend/package
+/frontend/.env
+/frontend/.env.*
+!/frontend/.env.example
+/frontend/vite.config.js.timestamp-*
+/frontend/vite.config.ts.timestamp-*
+
+
+.DS_Store
+.vscode

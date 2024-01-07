@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
+	import { browser } from '$app/environment';
 	// import SvelteMarkdown from 'svelte-markdown';
 	import IconSettings from '$lib/components/icons/icon-settings.svelte';
 	import IconLight from '$lib/components/icons/icon-light.svelte';
@@ -8,29 +8,26 @@
 	import { questions } from '$lib/questions';
 	import { onMount } from 'svelte';
 
-  let loading = false;
-  let query = '';
-  let text = '';
-  let content = '';
-  $: content = text;
+	let loading = false;
+	let query = '';
+	let text = '';
+	let content = '';
+	$: content = text;
 	let audioUrl = '';
 	let keyValue: string = browser ? (window.localStorage.getItem('openai_key') as string) : '';
 
 	let current_theme: string;
 
 	onMount(() => {
-		const saved_theme =
-			document.documentElement.getAttribute("data-theme");
+		const saved_theme = document.documentElement.getAttribute('data-theme');
 		if (saved_theme) {
 			current_theme = saved_theme;
 			return;
 		}
 
-		const preference_is_dark = window.matchMedia(
-			"(prefers-color-scheme: dark)",
-		).matches;
+		const preference_is_dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-		const theme = preference_is_dark ? "dark" : "light";
+		const theme = preference_is_dark ? 'dark' : 'light';
 		set_theme(theme); // TODO
 	});
 
@@ -74,7 +71,7 @@
 		loading = false;
 	};
 
-  const textToSpeech = async () => {
+	const textToSpeech = async () => {
 		loading = true;
 		const response = await fetch('/api/text-to-speech', {
 			method: 'POST',
@@ -105,87 +102,90 @@
 
 		if (response.ok) {
 			localStorage.setItem('openai_key', keyValue);
+			const one_year = 60 * 60 * 24 * 365;
+			document.cookie = `openai_key=${keyValue}; max-age=${one_year}; path=/`;
 		}
-		setTimeout(() => {}, 5000);
 		loading = false;
 	};
 
 	const onSelectQuestion = async (question: string) => {
 		query = question;
 		await sendQuestion();
-	}
+	};
 
 	const set_theme = (theme: string) => {
 		const one_year = 60 * 60 * 24 * 365;
 		document.cookie = `theme=${theme}; max-age=${one_year}; path=/`;
-		document.documentElement.setAttribute("data-theme", theme);
+		document.documentElement.setAttribute('data-theme', theme);
 		current_theme = theme;
-	}
+	};
 
 	const toggle_theme = (): void => {
-		const theme = current_theme === "light" ? "dark" : "light";
+		const theme = current_theme === 'light' ? 'dark' : 'light';
 		set_theme(theme);
-	}
+	};
 </script>
 
-	<h1 class="">ضع أولا مفتاح  openai ثم أكتب أو إختر سؤلك ثم إظغط على enter فوق حقل السؤال</h1>
-	<ul class="menu bg-base-200 w-96 rounded-box my-4">
-		{#each questions as question }
-			<li>
-				<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
-			</li>
-		{/each}
-	</ul>
+<h1 class="">ضع أولا مفتاح openai ثم أكتب أو إختر سؤلك ثم إظغط على enter فوق حقل السؤال</h1>
+<ul class="menu bg-base-200 w-96 rounded-box my-4">
+	{#each questions as question}
+		<li>
+			<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
+		</li>
+	{/each}
+</ul>
 
-  <div class="card w-96 h-96 image-full rounded-full shadow-inner shadow-blue-500/10 border border-blue-500/20">
-    <div class="card-body items-center flex justify-center">
-      <h2 class="card-titl">أكتب سؤالك</h2>
-      <!-- <div><SvelteMarkdown source={content} /></div> -->
-      <div class="card-actions justify-end">
-        <div class="col-span-11 rounded-full bg-gray-800">
-					<input
-						disabled={loading}
-						type="text"
-						class="textarea textarea-bordered border-sky-900 w-full rounded-full max-h-4 placeholder:italic placeholder:text-slate-400 dark:text-gray-400 text-gray-600"
-						placeholder=" اطرح أي سؤال"
-						value={query}
-						on:input={(e) => (query = e.target.value)}
-						on:keydown={(e) => {
-							if (e.key === 'Enter') {
-								sendQuestion();
-							}
-						}}
-					/>
-				</div>
+<div
+	class="card w-96 h-96 image-full rounded-full shadow-inner shadow-blue-500/10 border border-blue-500/20"
+>
+	<div class="card-body items-center flex justify-center">
+		<h2 class="card-titl">أكتب سؤالك</h2>
+		<!-- <div><SvelteMarkdown source={content} /></div> -->
+		<div class="card-actions justify-end">
+			<div class="col-span-11 rounded-full bg-gray-800">
+				<input
+					disabled={loading}
+					type="text"
+					class="textarea textarea-bordered border-sky-900 w-full rounded-full max-h-4 placeholder:italic placeholder:text-slate-400 dark:text-gray-400 text-gray-600"
+					placeholder=" اطرح أي سؤال"
+					value={query}
+					on:input={(e) => (query = e.target.value)}
+					on:keydown={(e) => {
+						if (e.key === 'Enter') {
+							sendQuestion();
+						}
+					}}
+				/>
+			</div>
 
-				<button
-					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-blue-500 mt-2"
-					on:click={() => document.getElementById('llm_settings').showModal()}
-				>
-					<IconSettings />
-				</button>
-				
-				<button
-					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary mt-2"
-					on:click={toggle_theme}>
-					{#if current_theme === 'light'}
-						<IconDark />
-					{:else}
-						<IconLight />
-					{/if}
-				</button>
-      </div>
-    </div>
+			<button
+				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-blue-500 mt-2"
+				on:click={() => document.getElementById('llm_settings').showModal()}
+			>
+				<IconSettings />
+			</button>
 
-    {#if loading}
-      <span class="loading loading-ring loading-lg absolute inset-x-40 bottom-0"></span>
-    {/if}
+			<button
+				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary mt-2"
+				on:click={toggle_theme}
+			>
+				{#if current_theme === 'light'}
+					<IconDark />
+				{:else}
+					<IconLight />
+				{/if}
+			</button>
+		</div>
+	</div>
 
-    {#if audioUrl != ''}
-      <audio src={audioUrl} controls autoPlay class="w-full absolute -bottom-20" />
-    {/if}
-  </div>
+	{#if loading}
+		<span class="loading loading-ring loading-lg absolute inset-x-40 bottom-0"></span>
+	{/if}
 
+	{#if audioUrl != ''}
+		<audio src={audioUrl} controls autoPlay class="w-full absolute -bottom-20" />
+	{/if}
+</div>
 
 <dialog id="llm_settings" class="modal">
 	<div class="modal-box">
@@ -215,16 +215,16 @@
 </dialog>
 
 <style>
-  .card.image-full:before {
-    background-color: inherit
-  }
-  .image-full {
-    background-image: url('/bg3.png');
-    background-position: center;
-    background-size: cover;
-    opacity: 0.7;
-  }
-  .card-actions {
-    opacity: 0.85;
-  }
+	.card.image-full:before {
+		background-color: inherit;
+	}
+	.image-full {
+		background-image: url('/bg3.png');
+		background-position: center;
+		background-size: cover;
+		opacity: 0.7;
+	}
+	.card-actions {
+		opacity: 0.85;
+	}
 </style>

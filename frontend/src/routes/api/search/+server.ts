@@ -1,4 +1,8 @@
-const url = 'http://backend:3333/search_stream';
+let url = 'http://backend:3333/search_stream';
+if (process.env.NODE_ENV === 'development') {
+	url = 'http://127.0.0.1:8000/search_stream';
+}
+console.log(url);
 
 export async function POST({ cookies, request }) {
 	try {

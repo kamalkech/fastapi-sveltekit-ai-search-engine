@@ -130,8 +130,8 @@
 	};
 </script>
 
-<h1 class="">ضع أولا مفتاح openai ثم أكتب أو إختر سؤلك ثم إظغط على enter فوق حقل السؤال</h1>
-<ul class="menu bg-base-200 w-96 rounded-box my-4">
+<h1>ضع أولا مفتاح openai ثم أكتب أو إختر سؤلك ثم إظغط على enter فوق حقل السؤال</h1>
+<ul class="menu bg-base-200 w-96 rounded-box my-4 text-sm">
 	{#each questions as question}
 		<li>
 			<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
@@ -143,7 +143,12 @@
 	class="card w-96 h-96 image-full rounded-full shadow-inner shadow-blue-500/10 border border-blue-500/20"
 >
 	<div class="card-body items-center flex justify-center">
-		<h2 class="card-titl">أكتب سؤالك</h2>
+		<h2 class="card-title">أكتب سؤالك</h2>
+
+		{#if loading}
+			<span class="loading loading-ring loading-lg absolute inset-x-40 top-0"></span>
+		{/if}
+
 		<!-- <div><SvelteMarkdown source={content} /></div> -->
 		<div class="card-actions justify-end">
 			<div class="col-span-11 rounded-full bg-gray-800">

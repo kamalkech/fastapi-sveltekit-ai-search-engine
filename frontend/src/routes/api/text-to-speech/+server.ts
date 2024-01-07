@@ -8,9 +8,15 @@ const textToSpeech = async (text: string, openai_key: string): Promise<string> =
 
 		const response = await openai.audio.speech.create({
 			model: 'tts-1',
-			voice: 'onyx', // fable", //"onyx", // shimmer
+			// voice: 'fable',
+			// voice: 'onyx', // good
+			// voice: 'shimmer',
+			// voice: 'echo', // good
+			// voice: 'alloy', // good but number arabic very bad
+			voice: 'nova',
 			input: text,
-			response_format: 'mp3'
+			// response_format: 'mp3',
+			response_format: 'opus'
 		});
 		const buffer = Buffer.from(await response.arrayBuffer());
 		const base64String = buffer.toString('base64');

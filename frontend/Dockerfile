@@ -23,8 +23,9 @@ COPY --from=builder /app/node_modules node_modules/
 
 COPY package.json ./
 
-EXPOSE 3000
+EXPOSE 80
 
 ENV NODE_ENV=production
 
-CMD [ "node", "build" ]
+# CMD [ "PORT=8080 node", "build" ]
+CMD [ "sh", "-c", "PORT=80 node build" ]

@@ -13,6 +13,7 @@
 	$: content = text;
 	let audioUrl = '';
 	let current_theme: string = 'dark';
+	const currentYear = new Date().getFullYear();
 
 	onMount(() => {
 		const saved_theme = document.documentElement.getAttribute('data-theme');
@@ -159,6 +160,12 @@
 	{#if audioUrl != ''}
 		<audio src={audioUrl} controls autoPlay class="w-full absolute -bottom-20" />
 	{/if}
+
+	<footer class="footer footer-center p-4 text-base-content absolute -bottom-40">
+		<aside>
+			<p>حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة  المهندس<span class="badge badge-sm badge-warning font-bold">كمال سحمود</span></p>
+		</aside>
+	</footer>
 </div>
 
 <style>

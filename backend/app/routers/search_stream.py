@@ -1,28 +1,26 @@
-import os
+"""..."""
 
+import os
 from fastapi import Body, APIRouter
 from pydantic import BaseModel
-
 from langchain.agents import AgentType, initialize_agent, load_tools
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferWindowMemory
-from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
-from langchain.schema import (
-    SystemMessage
-)
-
+from langchain.schema import SystemMessage
 from app.settings import Settings
 
 settings = Settings()
+OPENAI_KEY = settings.OPENAI_KEY
+os.environ["OPENAI_KEY"] = OPENAI_KEY
 SERPER_API_KEY = settings.SERPER_API_KEY
 os.environ["SERPER_API_KEY"] = SERPER_API_KEY
 
 router = APIRouter()
 
+
 class Query(BaseModel):
     """...."""
     text: str
-    openai_key: str
 
 
 @router.post("/")
@@ -32,11 +30,10 @@ async def search_stream(
     """...."""
     # Get body params.
     text = query.text
-    openai_key = query.openai_key
 
     # initialize the agent (we need to do this for the callbacks)
     llm = ChatOpenAI(
-        openai_api_key=openai_key,
+        openai_api_key=OPENAI_KEY,
         temperature=0,
         # model="gpt-3.5-turbo",
         model="gpt-4-1106-preview",
@@ -67,7 +64,6 @@ async def search_stream(
 
     system_message = SystemMessage(
         content="أنت مساعد بحث على الويب للحصول على نتائج الاستعلامات والتأكد من ترجمة الإجابة إلى اللغة العربية.",
-        # system="أنت مساعد بحث على الويب للحصول على نتائج الاستعلامات والتأكد من ترجمة الإجابة إلى اللغة العربية."
     )
 
     agent = initialize_agent(
@@ -88,4 +84,3 @@ async def search_stream(
 
     result = agent.run(text)
     return result
-

@@ -1,9 +1,7 @@
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
-export async function POST({ cookies, request }) {
+export async function POST({ request }) {
 	try {
-		// Imports the Google Cloud client library
-		// Creates a client
 		const client = new TextToSpeechClient();
 		const { text } = await request.json();
 
@@ -28,7 +26,6 @@ export async function POST({ cookies, request }) {
 
 		// Performs the text-to-speech request
 		const response = await client.synthesizeSpeech(data);
-
 		const buffer = Buffer.from(await response[0]?.audioContent);
 		const base64String = buffer.toString('base64');
 		const dataUrl = `data:audio/mp3;base64,${base64String}`;

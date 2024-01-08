@@ -1,26 +1,16 @@
-let url = 'http://backend:3333/search_stream';
-if (process.env.NODE_ENV === 'development') {
-	url = 'http://127.0.0.1:8000/search_stream';
-}
-console.log(url);
+import { BACKEND_URL } from '$env/static/private';
 
-export async function POST({ cookies, request }) {
+export async function POST({ request }) {
 	try {
-		const openai_key = cookies.get('openai_key');
-		if (!openai_key || openai_key === '') {
-			return new Response('Missing OpenAI key', { status: 400 });
-		}
-
 		const { text } = await request.json();
 
-		const response = await fetch(url, {
+		const response = await fetch(BACKEND_URL + '/search_stream', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				text,
-				openai_key: openai_key
+				text
 			})
 		});
 
@@ -30,8 +20,7 @@ export async function POST({ cookies, request }) {
 			status: 200
 		});
 	} catch (error: any) {
-		console.error(`Expect search and get answer 1: ${url}`, error);
-		return new Response(`Expect search and get answer 2: ${url} /  ${error.message}`, {
+		return new Response(`Expect search and get answer:  ${error.message}`, {
 			status: 500
 		});
 	}

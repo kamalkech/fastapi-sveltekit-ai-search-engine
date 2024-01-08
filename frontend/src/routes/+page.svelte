@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import IconSettings from '$lib/components/icons/icon-settings.svelte';
+	// import IconSettings from '$lib/components/icons/icon-settings.svelte';
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
 	import { removeCharacters } from '$lib/helper';
@@ -13,9 +12,7 @@
 	let content = '';
 	$: content = text;
 	let audioUrl = '';
-	let keyValue: string = browser ? (window.localStorage.getItem('openai_key') as string) : '';
-
-	let current_theme: string;
+	let current_theme: string = 'dark';
 
 	onMount(() => {
 		const saved_theme = document.documentElement.getAttribute('data-theme');
@@ -23,11 +20,9 @@
 			current_theme = saved_theme;
 			return;
 		}
-
 		const preference_is_dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
 		const theme = preference_is_dark ? 'dark' : 'light';
-		set_theme(theme); // TODO
+		set_theme(theme); 
 	});
 
 	const getText = async () => {
@@ -38,7 +33,6 @@
 			},
 			body: JSON.stringify({
 				text: query,
-				openai_key: keyValue
 			})
 		});
 
@@ -59,12 +53,6 @@
 
 	const sendQuestion = async () => {
 		try {
-			const key = localStorage.getItem('openai_key') || '';
-			if (!key || key === '') {
-				alert('Please enter a valid openai key');
-				return;
-			}
-
 			text = '';
 			loading = true;
 			await Promise.all([getText()]);
@@ -78,7 +66,6 @@
 	const textToSpeech = async () => {
 		loading = true;
 		const response = await fetch('/api/speech', {
-			// const response = await fetch('/api/text-to-speech', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -93,27 +80,9 @@
 		loading = false;
 	};
 
-	const saveKey = async () => {
-		loading = true;
-		const response = await fetch('/api/cookies', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				key: keyValue
-			})
-		});
-
-		if (response.ok) {
-			localStorage.setItem('openai_key', keyValue);
-			const one_year = 60 * 60 * 24 * 365;
-			document.cookie = `openai_key=${keyValue}; max-age=${one_year}; path=/`;
-		}
-		loading = false;
-	};
-
 	const onSelectQuestion = async (question: string) => {
+		document.body.click()
+
 		query = question;
 		await sendQuestion();
 	};
@@ -131,14 +100,16 @@
 	};
 </script>
 
-<h1>ضع أولا مفتاح openai ثم أكتب أو إختر سؤلك ثم إظغط على enter فوق حقل السؤال</h1>
-<ul class="menu bg-base-200 w-96 rounded-box my-4 text-sm">
-	{#each questions as question}
-		<li>
-			<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
-		</li>
-	{/each}
-</ul>
+<div class="dropdown dropdown-bottom dropdown-end dropdown-hover w-96 rounded-box mb-8 text-sm flex justify-center">
+  <div tabindex="-1"	role="button" id="show-questions" class=" btn m-1 border-0 text-white bg-pink-500 shadow-lg shadow-indigo-500/50 hover:bg-pink-800 dark:bg-slate-800 dark:hover:bg-slate-700">أسئلة مختارة</div>
+  <ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
+		{#each questions as question}
+			<li>
+				<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
+			</li>
+		{/each}
+	</ul>
+</div>
 
 <div
 	class="card w-96 h-96 image-full rounded-full shadow-inner shadow-blue-500/10 border border-blue-500/20"
@@ -156,7 +127,7 @@
 				<input
 					disabled={loading}
 					type="text"
-					class="textarea textarea-bordered border-sky-900 w-full rounded-full max-h-4 placeholder:italic placeholder:text-slate-400 dark:text-gray-400 text-gray-600"
+					class="textarea textarea-bordered border-sky-900 w-full rounded-full max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
 					placeholder=" اطرح أي سؤال"
 					value={query}
 					on:input={(e) => (query = e.target.value)}
@@ -167,13 +138,6 @@
 					}}
 				/>
 			</div>
-
-			<button
-				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-blue-500 mt-2"
-				on:click={() => document.getElementById('llm_settings').showModal()}
-			>
-				<IconSettings />
-			</button>
 
 			<button
 				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary mt-2"
@@ -196,33 +160,6 @@
 		<audio src={audioUrl} controls autoPlay class="w-full absolute -bottom-20" />
 	{/if}
 </div>
-
-<dialog id="llm_settings" class="modal">
-	<div class="modal-box">
-		<form method="dialog">
-			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-		</form>
-		<h3 class="font-bold text-lg text-center mt-4">OpenAI Settings</h3>
-		<label class="py-4 form-control w-full">
-			<input
-				type="text"
-				placeholder="المفتاح"
-				class="input input-bordered w-full"
-				value={keyValue}
-				on:input={(e) => (keyValue = e.target.value)}
-			/>
-			<div class="text-center">
-				<button
-					disabled={loading}
-					class="btn btn-sm btn-filled btn-neutral mt-3"
-					on:click={saveKey}
-				>
-					حفظ
-				</button>
-			</div>
-		</label>
-	</div>
-</dialog>
 
 <style>
 	.card.image-full:before {

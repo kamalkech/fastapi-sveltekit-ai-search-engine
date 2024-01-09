@@ -12,15 +12,15 @@ export async function POST({ request }) {
 			voice: {
 				languageCode: 'ar-XA',
 				// ssmlGender: 'NEUTRAL',
-				name: 'ar-XA-Wavenet-D'
+				name: 'ar-XA-Standard-D'
 			},
 			// select the type of audio encoding
 			audioConfig: {
 				// audioEncoding: 'MP3',
 				audioEncoding: 'LINEAR16',
-				effectsProfileId: ['large-home-entertainment-class-device'],
-				pitch: 0,
-				speakingRate: 1
+				// effectsProfileId: ['large-home-entertainment-class-device'],
+				pitch: -1.2, // 0
+				speakingRate: 0.96 // 1
 			}
 		};
 

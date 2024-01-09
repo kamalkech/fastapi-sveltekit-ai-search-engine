@@ -102,7 +102,7 @@
 </script>
 
 <div class="dropdown dropdown-bottom dropdown-end dropdown-hover w-96 rounded-box mb-8 text-sm flex justify-center">
-  <div tabindex="-1"	role="button" id="show-questions" class=" btn m-1 border-0 text-white bg-pink-500 shadow-lg shadow-indigo-500/50 hover:bg-pink-800 dark:bg-slate-800 dark:hover:bg-slate-700">أسئلة مختارة</div>
+  <div tabindex="-1"	role="button" id="show-questions" class="btn m-1 border-0 text-white bg-pink-500 shadow-lg shadow-pink-500/50 hover:bg-pink-800 dark:bg-slate-800 dark:shadow-indigo-500/50 dark:hover:bg-slate-700">أسئلة مختارة</div>
   <ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
 		{#each questions as question}
 			<li>
@@ -113,13 +113,13 @@
 </div>
 
 <div
-	class="card w-96 h-96 image-full rounded-full shadow-inner shadow-blue-500/10 border border-blue-500/20"
+	class="card w-80 h-80 image-full rounded-full border shadow-lg  shadow-pink-500/40  border-pink-500/40 dark:shadow-blue-500/20  dark:border-blue-500/20"
 >
-	<div class="card-body items-center flex justify-center">
+	<div class="card-body items-center flex justify-center space-y-4">
 		<h2 class="card-title">أكتب سؤالك</h2>
 
 		{#if loading}
-			<span class="loading loading-ring loading-lg absolute inset-x-40 top-0"></span>
+			<span class="loading loading-ring loading-lg absolute inset-x-30 -top-10"></span>
 		{/if}
 
 		<!-- <div><SvelteMarkdown source={content} /></div> -->
@@ -151,11 +151,11 @@
 				{/if}
 			</button>
 		</div>
-	</div>
 
-	{#if loading}
-		<span class="loading loading-ring loading-lg absolute inset-x-40 bottom-0"></span>
-	{/if}
+		{#if loading}
+			<span class="loading loading-ring loading-lg absolute inset-x-30 -bottom-5"></span>
+		{/if}
+	</div>
 
 	{#if audioUrl != ''}
 		<audio src={audioUrl} controls autoPlay class="w-full absolute -bottom-20" />
@@ -163,7 +163,8 @@
 
 	<footer class="footer footer-center p-4 text-base-content absolute -bottom-40">
 		<aside>
-			<p>حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة  المهندس<span class="badge badge-sm badge-warning font-bold">كمال سحمود</span></p>
+			<p>حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة  المهندس <span class="badge badge-sm badge-warning font-bold">كمال سحمود</span>
+			</p>
 		</aside>
 	</footer>
 </div>

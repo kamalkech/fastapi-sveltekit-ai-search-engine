@@ -51,7 +51,7 @@ async def search_stream(
     params = {
         "engine": "google",
         "gl": "us",
-        "hl": "en",
+        "hl": "ar",
     }
 
     tools = load_tools(
@@ -62,8 +62,10 @@ async def search_stream(
         description="a search engine for Arabic",
     )
 
+    prompt_content = "أنت مساعد بحث على الويب و إسمك 'زييا' ومهمتك الحصول على نتائج البحث والتأكد من ترجمة الإجابة إلى اللغة العربية. في بداية أي محادثة قم بتقديم نفسك.";
+
     system_message = SystemMessage(
-        content="أنت مساعد بحث على الويب للحصول على نتائج الاستعلامات والتأكد من ترجمة الإجابة إلى اللغة العربية.",
+        content=prompt_content
     )
 
     agent = initialize_agent(
@@ -79,6 +81,7 @@ async def search_stream(
         system_message=system_message,
         agent_kwargs={
             'prefix': "أنت مساعد مفيد للبحث على الويب وتأكد من الإجابة باللغة العربية.",
+            "system_message": system_message.content
         }
     )
 

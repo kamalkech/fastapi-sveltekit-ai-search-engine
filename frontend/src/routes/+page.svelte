@@ -103,34 +103,36 @@
 	};
 </script>
 
-<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-6">
+<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-4 w-96">
   <li>
-    <div class="dropdown dropdown-bottom dropdown-hover">
-			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">أسئلة مختارة</div>
-			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96">
+		<div class="dropdown dropdown-bottom dropdown-end dropdown-hover rounded-box text-sm flex justify-center">
+			<div tabindex="-1" id="show-questions" role="button" class="text-black dark:text-white">
+				أسئلة مختارة
+			</div>
+			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
 				{#each questions as question}
 					<li>
 						<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
 					</li>
 				{/each}
 			</ul>
-		</div>
+	 	</div>
   </li>
   <li>
    <div class="dropdown dropdown-bottom dropdown-end dropdown-hover rounded-box text-sm flex justify-center">
-			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">
-      التحديثات
-      <span class="badge badge-sm badge-warning">جديد</span>
-	 </div>
+		<div tabindex="-2"	role="button" class="text-black dark:text-white">
+			التحديثات
+			<span class="badge badge-sm badge-warning">جديد</span>
+		</div>
 	 </div>
   </li>
   <li>
-    <div class="dropdown dropdown-bottom dropdown-hover">
-			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">
+    <div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
+			<div tabindex="-3"	role="button" id="show-questions" class="text-black dark:text-white">
 				اختر اللغة
 				<span class="badge badge-xs badge-secondary dark:badge-primary"></span>
 			</div>
-			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96">
+			<ul tabindex="-3" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
 				<li>
 					<button>العربية</button>
 				</li>

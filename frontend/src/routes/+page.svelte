@@ -183,7 +183,11 @@
 					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
 					on:click={sendQuestion}
 				>
+				{#if loading}
+					<span class="loading loading-ring w-5 h-5"></span>
+					{:else}
 					<IconArrowLeft />
+				{/if}
 				</button>
 		</div>
 

@@ -105,7 +105,7 @@
 
 <ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-6">
   <li>
-    <div class="dropdown dropdown-bottom dropdown-end dropdown-hover rounded-box text-sm flex justify-center">
+    <div class="dropdown dropdown-bottom dropdown-hover">
 			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">أسئلة مختارة</div>
 			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96">
 				{#each questions as question}
@@ -125,7 +125,7 @@
 	 </div>
   </li>
   <li>
-    <div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
+    <div class="dropdown dropdown-bottom dropdown-hover">
 			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">
 				اختر اللغة
 				<span class="badge badge-xs badge-secondary dark:badge-primary"></span>
@@ -154,20 +154,18 @@
 
 		<!-- <div><SvelteMarkdown source={content} /></div> -->
 		<div class="card-actions flex flex-col">
-			<div class="rounded-full bg-gray-800">
-				<textarea
-					disabled={loading}
-					class="textarea textarea-bordered border-pink-900 dark:border-sky-900 w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
-					placeholder=" اطرح أي سؤال"
-					value={query}
-					on:input={(e) => (query = e.target.value)}
-					on:keydown={(e) => {
-						if (e.key === 'Enter') {
-							sendQuestion();
-						}
-					}}
-				/>
-			</div>
+			<textarea
+				disabled={loading}
+				class="textarea textarea-bordered border-pink-900 dark:border-sky-900 w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
+				placeholder=" اطرح أي سؤال"
+				value={query}
+				on:input={(e) => (query = e.target.value)}
+				on:keydown={(e) => {
+					if (e.key === 'Enter') {
+						sendQuestion();
+					}
+				}}
+			/>
 		</div>
 
 		<div class="buttons-actions">

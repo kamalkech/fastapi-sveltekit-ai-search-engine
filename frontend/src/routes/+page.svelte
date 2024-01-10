@@ -2,6 +2,7 @@
 	// import IconSettings from '$lib/components/icons/icon-settings.svelte';
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
+	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
 	import { removeCharacters } from '$lib/helper';
 	import { questions } from '$lib/questions';
 	import { onMount } from 'svelte';
@@ -54,6 +55,7 @@
 
 	const sendQuestion = async () => {
 		try {
+			if (query === '') return;
 			text = '';
 			loading = true;
 			await Promise.all([getText()]);
@@ -101,16 +103,44 @@
 	};
 </script>
 
-<div class="dropdown dropdown-bottom dropdown-end dropdown-hover w-96 rounded-box mb-8 text-sm flex justify-center">
-  <div tabindex="-1"	role="button" id="show-questions" class="btn m-1 border-0 text-white bg-pink-500 shadow-lg shadow-pink-500/50 hover:bg-pink-800 dark:bg-slate-800 dark:shadow-indigo-500/50 dark:hover:bg-slate-700">أسئلة مختارة</div>
-  <ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
-		{#each questions as question}
-			<li>
-				<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
-			</li>
-		{/each}
-	</ul>
-</div>
+<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-6">
+  <li>
+    <div class="dropdown dropdown-bottom dropdown-end dropdown-hover rounded-box text-sm flex justify-center">
+			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">أسئلة مختارة</div>
+			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96">
+				{#each questions as question}
+					<li>
+						<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
+					</li>
+				{/each}
+			</ul>
+		</div>
+  </li>
+  <li>
+   <div class="dropdown dropdown-bottom dropdown-end dropdown-hover rounded-box text-sm flex justify-center">
+			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">
+      التحديثات
+      <span class="badge badge-sm badge-warning">جديد</span>
+	 </div>
+	 </div>
+  </li>
+  <li>
+    <div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
+			<div tabindex="-1"	role="button" id="show-questions" class="text-black dark:text-white">
+				اختر اللغة
+				<span class="badge badge-xs badge-secondary dark:badge-primary"></span>
+			</div>
+			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96">
+				<li>
+					<button>العربية</button>
+				</li>
+				<li>
+					<button>الانجليزية</button>
+				</li>
+			</ul>
+		</div>
+  </li>
+</ul>
 
 <div
 	class="card w-80 h-80 image-full rounded-full border shadow-lg  shadow-pink-500/40  border-pink-500/40 dark:shadow-blue-500/20  dark:border-blue-500/20"
@@ -123,12 +153,11 @@
 		{/if}
 
 		<!-- <div><SvelteMarkdown source={content} /></div> -->
-		<div class="card-actions justify-end">
-			<div class="col-span-11 rounded-full bg-gray-800">
-				<input
+		<div class="card-actions flex flex-col">
+			<div class="rounded-full bg-gray-800">
+				<textarea
 					disabled={loading}
-					type="text"
-					class="textarea textarea-bordered border-sky-900 w-full rounded-full max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
+					class="textarea textarea-bordered border-pink-900 dark:border-sky-900 w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
 					placeholder=" اطرح أي سؤال"
 					value={query}
 					on:input={(e) => (query = e.target.value)}
@@ -139,17 +168,25 @@
 					}}
 				/>
 			</div>
+		</div>
 
-			<button
-				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary mt-2"
-				on:click={toggle_theme}
-			>
-				{#if current_theme === 'light'}
-					<IconDark />
-				{:else}
-					<IconLight />
-				{/if}
-			</button>
+		<div class="buttons-actions">
+				<button
+					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+					on:click={toggle_theme}
+				>
+					{#if current_theme === 'light'}
+						<IconDark />
+					{:else}
+						<IconLight />
+					{/if}
+				</button>
+				<button
+					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+					on:click={sendQuestion}
+				>
+					<IconArrowLeft />
+				</button>
 		</div>
 
 		{#if loading}
@@ -163,7 +200,7 @@
 
 	<footer class="footer footer-center p-4 text-base-content absolute -bottom-40">
 		<aside>
-			<p>حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة  المهندس <span class="badge badge-sm badge-warning font-bold">كمال سحمود</span>
+			<p>حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة  المهندس <span class="badge badge-sm badge-secondary dark:badge-primary font-bold">كمال سحمود</span>
 			</p>
 		</aside>
 	</footer>

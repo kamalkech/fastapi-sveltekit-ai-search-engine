@@ -7,6 +7,8 @@
 	import { questions } from '$lib/questions';
 	import { onMount } from 'svelte';
 
+	let showDropdown = false;
+
 	let loading = false;
 	let query = '';
 	let text = '';
@@ -24,7 +26,7 @@
 		}
 		const preference_is_dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 		const theme = preference_is_dark ? 'dark' : 'light';
-		set_theme(theme); 
+		set_theme(theme);
 	});
 
 	const getText = async () => {
@@ -34,7 +36,7 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				text: query,
+				text: query
 			})
 		});
 
@@ -54,16 +56,16 @@
 	};
 
 	const sendQuestion = async () => {
-		try {
-			if (query === '') return;
-			text = '';
-			loading = true;
-			await Promise.all([getText()]);
-			loading = false;
-		} catch (error) {
-			console.error(error);
-			loading = false;
-		}
+		// try {
+		// 	if (query === '') return;
+		// 	text = '';
+		// 	loading = true;
+		// 	await Promise.all([getText()]);
+		// 	loading = false;
+		// } catch (error) {
+		// 	console.error(error);
+		// 	loading = false;
+		// }
 	};
 
 	const textToSpeech = async () => {
@@ -84,7 +86,7 @@
 	};
 
 	const onSelectQuestion = async (question: string) => {
-		document.body.click()
+		showDropdown = false;
 
 		query = question;
 		await sendQuestion();
@@ -103,32 +105,45 @@
 	};
 </script>
 
-<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-4 w-96">
-  <li>
-		<div class="dropdown dropdown-bottom dropdown-end dropdown-hover rounded-box text-sm flex justify-center">
-			<div tabindex="-1" id="show-questions" role="button" class="text-black dark:text-white">
+<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-4">
+	<li>
+		<div class="dropdown dropdown-bottom rounded-box text-sm flex justify-center">
+			<div
+				tabindex="-1"
+				id="show-questions"
+				role="button"
+				class="text-black dark:text-white"
+				on:focus={() => {
+					showDropdown = true;
+				}}
+			>
 				أسئلة مختارة
 			</div>
-			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
-				{#each questions as question}
-					<li>
-						<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
-					</li>
-				{/each}
-			</ul>
-	 	</div>
-  </li>
-  <li>
-   <div class="dropdown dropdown-bottom dropdown-end dropdown-hover rounded-box text-sm flex justify-center">
-		<div tabindex="-2"	role="button" class="text-black dark:text-white">
-			التحديثات
-			<span class="badge badge-sm badge-warning">جديد</span>
+			{#if showDropdown}
+				<ul
+					tabindex="-1"
+					class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96"
+				>
+					{#each questions as question}
+						<li>
+							<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
-	 </div>
-  </li>
-  <li>
-    <div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
-			<div tabindex="-3"	role="button" id="show-questions" class="text-black dark:text-white">
+	</li>
+	<li>
+		<div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
+			<div tabindex="-2" role="button" class="text-black dark:text-white">
+				التحديثات
+				<span class="badge badge-sm badge-warning">جديد</span>
+			</div>
+		</div>
+	</li>
+	<li>
+		<div class="dropdown dropdown-bottom rounded-box text-sm flex justify-center">
+			<div tabindex="-3" role="button" id="show-questions" class="text-black dark:text-white">
 				اختر اللغة
 				<span class="badge badge-xs badge-secondary dark:badge-primary"></span>
 			</div>
@@ -141,11 +156,11 @@
 				</li>
 			</ul>
 		</div>
-  </li>
+	</li>
 </ul>
 
 <div
-	class="card w-80 h-80 image-full rounded-full border shadow-lg  shadow-pink-500/40  border-pink-500/40 dark:shadow-blue-500/20  dark:border-blue-500/20"
+	class="card w-80 h-80 image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20"
 >
 	<div class="card-body items-center flex justify-center space-y-4">
 		<h2 class="card-title">أكتب سؤالك</h2>
@@ -154,7 +169,6 @@
 			<span class="loading loading-ring loading-lg absolute inset-x-30 -top-10"></span>
 		{/if}
 
-		<!-- <div><SvelteMarkdown source={content} /></div> -->
 		<div class="card-actions flex flex-col">
 			<textarea
 				disabled={loading}
@@ -171,26 +185,26 @@
 		</div>
 
 		<div class="buttons-actions">
-				<button
-					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
-					on:click={toggle_theme}
-				>
-					{#if current_theme === 'light'}
-						<IconDark />
-					{:else}
-						<IconLight />
-					{/if}
-				</button>
-				<button
-					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
-					on:click={sendQuestion}
-				>
+			<button
+				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+				on:click={toggle_theme}
+			>
+				{#if current_theme === 'light'}
+					<IconDark />
+				{:else}
+					<IconLight />
+				{/if}
+			</button>
+			<button
+				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+				on:click={sendQuestion}
+			>
 				{#if loading}
 					<span class="loading loading-ring w-5 h-5"></span>
-					{:else}
+				{:else}
 					<IconArrowLeft />
 				{/if}
-				</button>
+			</button>
 		</div>
 
 		{#if loading}
@@ -204,7 +218,9 @@
 
 	<footer class="footer footer-center p-4 text-base-content absolute -bottom-40">
 		<aside>
-			<p>حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة  المهندس <span class="badge badge-sm badge-secondary dark:badge-primary font-bold">كمال سحمود</span>
+			<p>
+				حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة المهندس
+				<span class="badge badge-sm badge-secondary dark:badge-primary font-bold">كمال سحمود</span>
 			</p>
 		</aside>
 	</footer>

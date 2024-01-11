@@ -56,16 +56,16 @@
 	};
 
 	const sendQuestion = async () => {
-		// try {
-		// 	if (query === '') return;
-		// 	text = '';
-		// 	loading = true;
-		// 	await Promise.all([getText()]);
-		// 	loading = false;
-		// } catch (error) {
-		// 	console.error(error);
-		// 	loading = false;
-		// }
+		try {
+			if (query === '') return;
+			text = '';
+			loading = true;
+			await Promise.all([getText()]);
+			loading = false;
+		} catch (error) {
+			console.error(error);
+			loading = false;
+		}
 	};
 
 	const textToSpeech = async () => {

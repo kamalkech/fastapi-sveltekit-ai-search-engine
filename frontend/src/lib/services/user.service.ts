@@ -2,19 +2,10 @@ import * as argon2 from 'argon2';
 import prisma from '$lib/prisma';
 import type { UserCreateDto } from '$lib/dto/user.dto';
 
-type UserModel = {
-	id: number;
-	firstname: string;
-	lastname: string;
-	email: string;
-	password: string;
-	status: number;
-};
-
 export default class UserService {
 	async create(input: UserCreateDto) {
 		try {
-			const user = await this.getUserByEmail(input.email);
+			const user = await this.getByEmail(input.email);
 			if (user) {
 				throw new Error('User already exists');
 			}
@@ -24,7 +15,8 @@ export default class UserService {
 			return await prisma.user.create({
 				data: {
 					...input,
-					password: hashedPassword
+					password: hashedPassword,
+					status: 0
 				}
 			});
 		} catch (error) {

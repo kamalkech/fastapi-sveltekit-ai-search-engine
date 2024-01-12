@@ -1,5 +1,4 @@
 <script lang="ts">
-	// import IconSettings from '$lib/components/icons/icon-settings.svelte';
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
 	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
@@ -7,8 +6,16 @@
 	import { questions } from '$lib/questions';
 	import { onMount } from 'svelte';
 
-	let showDropdown = false;
+	import SignupForm from '$lib/components/forms/signup.svelte';
+	import SigninForm from '$lib/components/forms/signin.svelte';
 
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+	const { user } = data;
+	console.log('user', user);
+
+	let showDropdown = false;
 	let loading = false;
 	let query = '';
 	let text = '';
@@ -117,6 +124,7 @@
 					showDropdown = true;
 				}}
 			>
+				<span class="badge badge-xs badge-warning"></span>
 				أسئلة مختارة
 			</div>
 			{#if showDropdown}
@@ -135,17 +143,29 @@
 	</li>
 	<li>
 		<div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
-			<div tabindex="-2" role="button" class="text-black dark:text-white">
-				التحديثات
-				<span class="badge badge-sm badge-warning">جديد</span>
-			</div>
+			{#if user}
+				<form method="POST" action="?/logout">
+					<button type="submit" class="text-black dark:text-white" name="logout" value="true">
+						<span class="badge badge-xs badge-primary"></span>
+						Logout
+					</button>
+				</form>
+			{:else}
+				<button
+					class="text-black dark:text-white"
+					on:click={() => document.getElementById('form_signup').showModal()}
+				>
+					<span class="badge badge-xs badge-primary"></span>
+					الحساب
+				</button>
+			{/if}
 		</div>
 	</li>
 	<li>
 		<div class="dropdown dropdown-bottom rounded-box text-sm flex justify-center">
 			<div tabindex="-3" role="button" id="show-questions" class="text-black dark:text-white">
+				<span class="badge badge-xs badge-secondary"></span>
 				اختر اللغة
-				<span class="badge badge-xs badge-secondary dark:badge-primary"></span>
 			</div>
 			<ul tabindex="-3" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
 				<li>
@@ -226,6 +246,27 @@
 	</footer>
 </div>
 
+<dialog id="form_signup" class="modal">
+	<div class="modal-box">
+		<div role="tablist" class="tabs tabs-bordered">
+			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="الدخول" checked />
+			<div role="tabpanel" class="tab-content p-10">
+				<SigninForm />
+			</div>
+
+			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="التسجيل" />
+			<div role="tabpanel" class="tab-content p-10">
+				<SignupForm />
+			</div>
+		</div>
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn btn-warning">أغلق</button>
+			</form>
+		</div>
+	</div>
+</dialog>
+
 <style>
 	.card.image-full:before {
 		background-color: inherit;
@@ -238,5 +279,10 @@
 	}
 	.card-actions {
 		opacity: 0.85;
+	}
+	:global(.invalid-feedback.error) {
+		font-size: 0.85rem !important;
+		margin-top: 0.5rem !important;
+		color: red;
 	}
 </style>

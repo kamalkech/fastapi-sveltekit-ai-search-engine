@@ -94,7 +94,6 @@
 
 	const onSelectQuestion = async (question: string) => {
 		showDropdown = false;
-
 		query = question;
 		await sendQuestion();
 	};

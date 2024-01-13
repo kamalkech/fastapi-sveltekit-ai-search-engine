@@ -47,6 +47,9 @@ async def search_stream(
         return_messages=True,
         output_key="output"
     )
+    memory.save_context({"input": "hi"}, {"output": "whats up"})
+    memory.save_context({"input": "not much you"}, {"output": "not much"})
+    memory.save_context({"input": "my name is kamal and you"}, {"output": "i am Zeia nice to meet you"})
 
     params = {
         "engine": "google",

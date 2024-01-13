@@ -12,7 +12,8 @@ async function main() {
 				firstname: p.author.firstname,
 				lastname: p.author.lastname,
 				password: p.author.password,
-				email: p.author.email
+				email: p.author.email,
+				status: 1
 				// posts: {
 				// 	create: {
 				// 		title: p.title,

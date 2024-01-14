@@ -2,6 +2,7 @@
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
 	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
+	import IconMicro from '$lib/components/icons/icon-mic.svelte';
 	import { removeCharacters } from '$lib/helper';
 	import { questions } from '$lib/questions';
 	import { onMount } from 'svelte';
@@ -144,9 +145,9 @@
 		<div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
 			{#if user}
 				<form method="POST" action="?/logout">
-					<button type="submit" class="text-black dark:text-white" name="logout" value="true">
-						<span class="badge badge-xs badge-primary"></span>
-						Logout
+					<button type="submit" class="text-red-400 btn-error" name="logout" value="true">
+						<span class="badge badge-xs badge-error"></span>
+						خروج
 					</button>
 				</form>
 			{:else}
@@ -204,6 +205,9 @@
 		</div>
 
 		<div class="buttons-actions">
+			<button class="btn btn-sm btn-filled btn-neutral text-white bg-error" on:click={() => {}}>
+				<IconMicro />
+			</button>
 			<button
 				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
 				on:click={toggle_theme}
@@ -224,6 +228,10 @@
 					<IconArrowLeft />
 				{/if}
 			</button>
+
+			{#if user}
+				<p class="mt-6 text-xs">{user.firstname} {user.lastname}</p>
+			{/if}
 		</div>
 
 		{#if loading}

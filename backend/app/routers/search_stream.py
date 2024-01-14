@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from langchain.agents import AgentType, initialize_agent, load_tools
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferWindowMemory
-from langchain.schema import SystemMessage
+from langchain.schema import SystemMessage, chat_history
 from app.settings import Settings
 
 settings = Settings()
@@ -21,6 +21,7 @@ router = APIRouter()
 class Query(BaseModel):
     """...."""
     text: str
+    chat_history: list
 
 
 @router.post("/")
@@ -30,26 +31,26 @@ async def search_stream(
     """...."""
     # Get body params.
     text = query.text
+    chat_history = query.chat_history
 
-    # initialize the agent (we need to do this for the callbacks)
+
+
+    memory = ConversationBufferWindowMemory(
+        memory_key="chat_history",
+        k=20,
+        return_messages=True,
+        output_key="output"
+    )
+
     llm = ChatOpenAI(
         openai_api_key=OPENAI_KEY,
         temperature=0,
         # model="gpt-3.5-turbo",
         model="gpt-4-1106-preview",
         streaming=True,
-        max_tokens=1000
+        # max_tokens=1000
     )
 
-    memory = ConversationBufferWindowMemory(
-        memory_key="chat_history",
-        k=10,
-        return_messages=True,
-        output_key="output"
-    )
-    memory.save_context({"input": "hi"}, {"output": "whats up"})
-    memory.save_context({"input": "not much you"}, {"output": "not much"})
-    memory.save_context({"input": "my name is kamal and you"}, {"output": "i am Zeia nice to meet you"})
 
     params = {
         "engine": "google",
@@ -71,6 +72,13 @@ async def search_stream(
         content=prompt_content
     )
 
+
+    # map chat_history push to memoery using save_context
+    for chat in chat_history:
+        print(chat)
+        memory.save_context({"input": chat['input']}, {"output": chat['output']})
+
+    # initialize the agent (we need to do this for the callbacks)
     agent = initialize_agent(
         agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
         tools=tools,

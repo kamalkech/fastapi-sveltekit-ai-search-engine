@@ -7,9 +7,22 @@ export default class ChatService {
 			data: {
 				input: input.input,
 				output: input.output,
-				userId: 1
+				userId: input.userId
 			}
 		});
 		console.log('result', result);
+	}
+
+	async getAllByUser(userId: number, limit: number = 10): Promise<any> {
+		return await prisma.chat.findMany({
+			skip: 0,
+			take: limit,
+			where: {
+				userId
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
 	}
 }

@@ -9,7 +9,7 @@
 	const form_name = 'form_singin';
 	const fields: IField[] = [
 		{
-			value: 'test1@emsail.com',
+			value: 'test1@email.com',
 			type: 'input', // required
 			name: 'signin_email', // required
 			attributes: {

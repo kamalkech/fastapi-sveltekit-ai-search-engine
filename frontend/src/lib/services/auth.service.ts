@@ -32,8 +32,11 @@ export class AuthService {
 
 			const jwtUser = {
 				id: user.id,
-				email: user.email
+				email: user.email,
+				firstname: user.firstname,
+				lastname: user.lastname
 			};
+			console.log('jwtUser', jwtUser);
 
 			const token = jwt.sign(jwtUser, JWT_ACCESS_SECRET, {
 				expiresIn: '1d'

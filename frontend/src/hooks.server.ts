@@ -2,8 +2,14 @@ import { THEMES } from '$lib/config';
 import { JWT_ACCESS_SECRET } from '$env/static/private';
 import jwt from 'jsonwebtoken';
 import prisma from '$lib/prisma';
+import { loadLocaleAsync } from './i18n/i18n-util.async';
+import { setLocale } from './i18n/i18n-svelte';
 
 export const handle = async ({ event, resolve }) => {
+	const locale = 'en';
+	await loadLocaleAsync(locale);
+	setLocale(locale);
+
 	const theme = event.cookies.get('theme');
 	const authCookie = event.cookies.get('zeia_token');
 

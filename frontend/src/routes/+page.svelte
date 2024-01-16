@@ -8,13 +8,13 @@
 
 	import SignupForm from '$lib/components/forms/signup.svelte';
 	import SigninForm from '$lib/components/forms/signin.svelte';
+	import { LL } from '../i18n/i18n-svelte';
 
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 	const { user } = data;
 	console.log('user', user);
-
 	let showDropdown = false;
 	let loading = false;
 	let query = '';
@@ -165,6 +165,7 @@
 			<div tabindex="-3" role="button" id="show-questions" class="text-black dark:text-white">
 				<span class="badge badge-xs badge-secondary"></span>
 				اختر اللغة
+				{$LL.HI()}
 			</div>
 			<ul tabindex="-3" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
 				<li>

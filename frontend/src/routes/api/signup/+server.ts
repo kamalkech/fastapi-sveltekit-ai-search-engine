@@ -1,21 +1,15 @@
-import { UserService } from '$lib/services';
+import { AuthService } from '$lib/services';
 
 // export async function POST({ request, cookies }) {
-export async function GET({ request, cookies }) {
+export async function POST({ request }) {
 	try {
-		const { email, password } = await request.json();
+		const input = await request.json();
 		const authService = new AuthService();
-		const { token } = await authService.singin(email, password);
+		const user = await authService.signup(input);
 
-		cookies.set('zeia_token', `Bearer ${token}`, {
-			httpOnly: true,
-			path: '/',
-			secure: true,
-			sameSite: 'strict',
-			maxAge: 60 * 60 * 24 // 1 day
-		});
+		const msg_success = `Your account with email ${user.email} has been created successfully. To activate it, simply copy the 6-digit code from the email sent to you. For any questions, reach out to our support team.`;
 
-		return new Response(JSON.stringify(token), {
+		return new Response(JSON.stringify({ msg_success }), {
 			status: 200
 		});
 	} catch (error: any) {

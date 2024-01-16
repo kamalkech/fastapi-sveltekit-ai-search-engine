@@ -1,4 +1,4 @@
-export const htmlActivateAccount = (code: string): string => {
+export const htmlActivateAccount = (code: number): string => {
 	return `<html lang=“ar” dir=“rtl">
 <head>
   <meta charset="UTF-8">

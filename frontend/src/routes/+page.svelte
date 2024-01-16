@@ -2,7 +2,6 @@
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
 	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
-	import IconMicro from '$lib/components/icons/icon-mic.svelte';
 	import { removeCharacters } from '$lib/helper';
 	import { questions } from '$lib/questions';
 	import { onMount } from 'svelte';
@@ -205,9 +204,6 @@
 		</div>
 
 		<div class="buttons-actions">
-			<button class="btn btn-sm btn-filled btn-neutral text-white bg-error" on:click={() => {}}>
-				<IconMicro />
-			</button>
 			<button
 				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
 				on:click={toggle_theme}
@@ -256,13 +252,13 @@
 <dialog id="form_signup" class="modal">
 	<div class="modal-box">
 		<div role="tablist" class="tabs tabs-bordered">
-			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="الدخول" checked />
-			<div role="tabpanel" class="tab-content p-10">
+			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="الدخول" />
+			<div role="tabpanel" class="tab-content mt-6">
 				<SigninForm />
 			</div>
 
-			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="التسجيل" />
-			<div role="tabpanel" class="tab-content p-10">
+			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="التسجيل" checked />
+			<div role="tabpanel" class="tab-content mt-6">
 				<SignupForm />
 			</div>
 		</div>

@@ -11,18 +11,15 @@ export class MailService {
 		}
 	});
 
-	constructor() {
-		this.transporter.verify(async (error, success) => {
-			if (error) {
-				console.log(error);
-			} else {
-				console.log('Server is ready to take messages');
-			}
-		});
-	}
-
 	async sendMail(to: string, subject: string, html: string) {
 		try {
+			this.transporter.verify(async (error, success) => {
+				if (error) {
+					console.log(error);
+				} else {
+					console.log('Server is ready to take messages');
+				}
+			});
 			await this.transporter.sendMail({
 				from: 'support@zeia.ma',
 				sender: 'support@zeia.ma',

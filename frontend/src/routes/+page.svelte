@@ -1,21 +1,20 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { removeCharacters } from '$lib/helper';
+	import type { PageData } from './$types';
+	import { t } from '$lib/translations';
+
+	// Import components.
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
 	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
-	import { removeCharacters } from '$lib/helper';
-	import { questions } from '$lib/questions';
-	import { onMount } from 'svelte';
-
-	import SignupForm from '$lib/components/forms/signup.svelte';
-	import SigninForm from '$lib/components/forms/signin.svelte';
-
-	import type { PageData } from './$types';
+	import FormSigninSignUp from '$lib/components/forms/singin_signup.svelte';
+	import Header from '$lib/components/partials/header.svelte';
+	import Footer from '$lib/components/partials/footer.svelte';
 
 	export let data: PageData;
 	const { user } = data;
-	console.log('user', user);
 
-	let showDropdown = false;
 	let loading = false;
 	let query = '';
 	let text = '';
@@ -23,7 +22,6 @@
 	$: content = text;
 	let audioUrl = '';
 	let current_theme: string = 'dark';
-	const currentYear = new Date().getFullYear();
 
 	onMount(() => {
 		const saved_theme = document.documentElement.getAttribute('data-theme');
@@ -35,8 +33,22 @@
 		const theme = preference_is_dark ? 'dark' : 'light';
 		set_theme(theme);
 	});
+	// Search.
+	const search = async () => {
+		try {
+			if (query === '') return;
+			text = '';
+			loading = true;
+			await Promise.all([getResponseText()]);
+			loading = false;
+		} catch (error) {
+			console.error(error);
+			loading = false;
+		}
+	};
 
-	const getText = async () => {
+	// Get answer.
+	const getResponseText = async () => {
 		const response = await fetch('/api/search', {
 			method: 'POST',
 			headers: {
@@ -62,19 +74,7 @@
 		await textToSpeech();
 	};
 
-	const sendQuestion = async () => {
-		try {
-			if (query === '') return;
-			text = '';
-			loading = true;
-			await Promise.all([getText()]);
-			loading = false;
-		} catch (error) {
-			console.error(error);
-			loading = false;
-		}
-	};
-
+	// Convert text to speech.
 	const textToSpeech = async () => {
 		loading = true;
 		const response = await fetch('/api/speech', {
@@ -92,12 +92,13 @@
 		loading = false;
 	};
 
-	const onSelectQuestion = async (question: string) => {
-		showDropdown = false;
-		query = question;
-		await sendQuestion();
+	// Choose a selected questions.
+	const onSelectQuestion = async (event: any) => {
+		query = event.detail.question;
+		await search();
 	};
 
+	// Set theme.
 	const set_theme = (theme: string) => {
 		const one_year = 60 * 60 * 24 * 365;
 		document.cookie = `theme=${theme}; max-age=${one_year}; path=/`;
@@ -105,84 +106,22 @@
 		current_theme = theme;
 	};
 
+	// Toggle theme light/dark.
 	const toggle_theme = (): void => {
 		const theme = current_theme === 'light' ? 'dark' : 'light';
 		set_theme(theme);
 	};
 </script>
 
-<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-4">
-	<li>
-		<div class="dropdown dropdown-bottom rounded-box text-sm flex justify-center">
-			<div
-				tabindex="-1"
-				id="show-questions"
-				role="button"
-				class="text-black dark:text-white"
-				on:focus={() => {
-					showDropdown = true;
-				}}
-			>
-				<span class="badge badge-xs badge-warning"></span>
-				أسئلة مختارة
-			</div>
-			{#if showDropdown}
-				<ul
-					tabindex="-1"
-					class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96"
-				>
-					{#each questions as question}
-						<li>
-							<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
-						</li>
-					{/each}
-				</ul>
-			{/if}
-		</div>
-	</li>
-	<li>
-		<div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
-			{#if user}
-				<form method="POST" action="?/logout">
-					<button type="submit" class="text-red-400 btn-error" name="logout" value="true">
-						<span class="badge badge-xs badge-error"></span>
-						خروج
-					</button>
-				</form>
-			{:else}
-				<button
-					class="text-black dark:text-white"
-					on:click={() => document.getElementById('form_signup').showModal()}
-				>
-					<span class="badge badge-xs badge-primary"></span>
-					الحساب
-				</button>
-			{/if}
-		</div>
-	</li>
-	<li>
-		<div class="dropdown dropdown-bottom rounded-box text-sm flex justify-center">
-			<div tabindex="-3" role="button" id="show-questions" class="text-black dark:text-white">
-				<span class="badge badge-xs badge-secondary"></span>
-				اختر اللغة
-			</div>
-			<ul tabindex="-3" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
-				<li>
-					<button>العربية</button>
-				</li>
-				<li>
-					<button>الانجليزية</button>
-				</li>
-			</ul>
-		</div>
-	</li>
-</ul>
+<Header {user} on:onSelectQuestion={onSelectQuestion} />
 
 <div
 	class="card w-80 h-80 image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20"
 >
 	<div class="card-body items-center flex justify-center space-y-4">
-		<h2 class="card-title">أكتب سؤالك</h2>
+		<h2 class="card-title">
+			{$t(`circle.title`)}
+		</h2>
 
 		{#if loading}
 			<span class="loading loading-ring loading-lg absolute inset-x-30 -top-10"></span>
@@ -192,12 +131,12 @@
 			<textarea
 				disabled={loading}
 				class="textarea textarea-bordered border-pink-900 dark:border-sky-900 w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
-				placeholder=" اطرح أي سؤال"
+				placeholder={$t(`circle.placeholder`)}
 				value={query}
 				on:input={(e) => (query = e.target.value)}
 				on:keydown={(e) => {
 					if (e.key === 'Enter') {
-						sendQuestion();
+						search();
 					}
 				}}
 			/>
@@ -216,7 +155,7 @@
 			</button>
 			<button
 				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
-				on:click={sendQuestion}
+				on:click={search}
 			>
 				{#if loading}
 					<span class="loading loading-ring w-5 h-5"></span>
@@ -239,36 +178,12 @@
 		<audio src={audioUrl} controls autoPlay class="w-full absolute -bottom-20" />
 	{/if}
 
-	<footer class="footer footer-center p-4 text-base-content absolute -bottom-40">
-		<aside>
-			<p>
-				حقوق النشر © {currentYear} - جميع الحقوق محفوظة، تم إنشاءها بواسطة المهندس
-				<span class="badge badge-sm badge-secondary dark:badge-primary font-bold">كمال سحمود</span>
-			</p>
-		</aside>
-	</footer>
+	<!-- footer -->
+	<Footer />
 </div>
 
-<dialog id="form_signup" class="modal">
-	<div class="modal-box">
-		<div role="tablist" class="tabs tabs-bordered">
-			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="الدخول" />
-			<div role="tabpanel" class="tab-content mt-6">
-				<SigninForm />
-			</div>
-
-			<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="التسجيل" checked />
-			<div role="tabpanel" class="tab-content mt-6">
-				<SignupForm />
-			</div>
-		</div>
-		<div class="modal-action">
-			<form method="dialog">
-				<button class="btn btn-warning">أغلق</button>
-			</form>
-		</div>
-	</div>
-</dialog>
+<!-- Form signup and signin -->
+<FormSigninSignUp />
 
 <style>
 	.card.image-full:before {

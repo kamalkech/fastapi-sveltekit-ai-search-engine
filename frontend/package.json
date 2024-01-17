@@ -53,7 +53,8 @@
 		"nodemailer": "^6.9.8",
 		"openai": "^4.24.1",
 		"sqlite3": "^5.1.7",
-		"svelte-formly": "^2.0.1"
+		"svelte-formly": "^2.0.1",
+		"sveltekit-i18n": "^2.4.2"
 	},
 	"prisma": {
 		"seed": "tsx prisma/seed.ts"

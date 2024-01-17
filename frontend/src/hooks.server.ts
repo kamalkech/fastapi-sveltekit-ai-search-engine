@@ -6,6 +6,8 @@ import prisma from '$lib/prisma';
 export const handle = async ({ event, resolve }) => {
 	const theme = event.cookies.get('theme');
 	const authCookie = event.cookies.get('zeia_token');
+	const lng = event.cookies.get('lng');
+	console.log('lng', lng);
 
 	if (authCookie) {
 		const token = authCookie.split(' ')[1];
@@ -45,7 +47,9 @@ export const handle = async ({ event, resolve }) => {
 
 	return await resolve(event, {
 		transformPageChunk: ({ html }) => {
-			return html.replace('data-theme=""', `data-theme="${theme}"`);
+			html.replace('dir=""', `dir="kamal"`);
+			html.replace('data-theme=""', `data-theme="${theme}"`);
+			return html;
 		}
 	});
 };

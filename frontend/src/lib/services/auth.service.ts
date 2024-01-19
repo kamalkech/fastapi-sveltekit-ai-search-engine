@@ -13,7 +13,8 @@ export class AuthService {
 			// Check if user exists
 			const user = await prisma.user.findUnique({
 				where: {
-					email
+					email,
+					status: 1
 				}
 			});
 
@@ -57,13 +58,15 @@ export class AuthService {
 			throw new Error('This email is already in use');
 		}
 
-		// Create user.
+		// Instantiate services.
 		const userService = new UserService();
 		const mailService = new MailService();
 		const helperService = new HelperService();
 
-		const newUser = await userService.create(input);
+		// Create user.
 		const code_activation = helperService.generateActivationCode();
+		input.code = code_activation;
+		const newUser = await userService.create(input);
 
 		// Send mail to activate account.
 		await mailService.sendMail(

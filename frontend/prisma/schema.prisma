@@ -23,5 +23,7 @@ model User {
   firstname String
   lastname  String
   status    Int
+  code      String
+  language  String
   chats     Chat[]
 }

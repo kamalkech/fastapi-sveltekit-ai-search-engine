@@ -165,7 +165,7 @@
 			</button>
 
 			{#if user}
-				<p class="mt-6 text-xs">{user.firstname} {user.lastname}</p>
+				<p class="mt-6 text-xs text-center">{user.firstname} {user.lastname}</p>
 			{/if}
 		</div>
 

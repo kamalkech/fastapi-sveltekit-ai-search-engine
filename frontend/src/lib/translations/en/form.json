@@ -1,0 +1,11 @@
+{
+	"signup": "Signup",
+	"signin": "Signin",
+	"close": "close",
+	"submit": "submit",
+	"reset": "reset",
+	"msg_field_required": "This field is required",
+	"msg_mail_format": "The email format is not valid",
+	"msg_password_max": "Your password is too long, max",
+	"msg_password_min": "Your password is too short, min"
+}

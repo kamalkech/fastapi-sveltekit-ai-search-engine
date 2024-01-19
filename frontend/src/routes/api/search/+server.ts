@@ -6,10 +6,11 @@ type ChatHistory = {
 	output: string;
 };
 
-export async function POST({ request, locals }) {
+export async function POST({ request, locals, cookies }) {
 	try {
 		const user = locals.user;
 		const { text } = await request.json();
+		const lng = cookies.get('lng') ?? 'en';
 
 		const chatService = new ChatService();
 
@@ -27,14 +28,13 @@ export async function POST({ request, locals }) {
 			}
 		}
 
-		console.log('chat_history', chat_history);
-
 		const response = await fetch(BACKEND_URL + '/search_stream', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
+				lng,
 				text,
 				chat_history
 			})

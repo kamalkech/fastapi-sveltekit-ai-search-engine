@@ -1,11 +1,13 @@
-import { loadTranslations } from '$lib/translations';
+import { addTranslations, setLocale, setRoute } from '$lib/translations';
 
-export const load = async (event) => {
-	const initialLocale = 'ar'; // get from cookie / url / fetch from server...
-	// const initialLocale = cookies.get('lng') ?? 'ar';
-	console.log('cookies', await event);
+export const load = async ({ data }) => {
+	const { i18n, translations } = data;
+	const { locale, route } = i18n;
 
-	await loadTranslations(initialLocale); // keep this just before the `return`
+	addTranslations(translations);
 
-	return {};
+	await setRoute(route);
+	await setLocale(locale);
+
+	return i18n;
 };

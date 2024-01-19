@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Formly, type IField } from 'svelte-formly';
+	import { t } from '$lib/translations';
 
-	const msg_required = 'هدا الحقل ضروري';
+	const msg_required = $t('form.msg_field_required');
 	let error = '';
 	let loading = false;
 	let status: number;
@@ -59,7 +60,7 @@
 			rules: ['required', 'email'],
 			messages: {
 				required: msg_required,
-				email: 'تنسيق البريد الإلكتروني غير صحيح'
+				email: $t('form.msg_mail_format')
 			},
 			prefix: {
 				tag: 'div',
@@ -80,8 +81,8 @@
 			rules: ['required', 'min:6', 'max:10'],
 			messages: {
 				required: msg_required,
-				min: 'كلمة المرور الخاصة بك قصيرة جدًا الأدنى = 6',
-				max: 'كلمة المرور الخاصة بك طويلة جدًا الحد الأقصى = 10'
+				min: $t('form.msg_password_min') + ' 6',
+				max: $t('form.msg_password_max') + ' 10'
 			},
 			prefix: {
 				tag: 'div',
@@ -102,8 +103,8 @@
 			rules: ['required', 'min:6', 'max:10'],
 			messages: {
 				required: msg_required,
-				min: 'كلمة المرور الخاصة بك قصيرة جدًا الأدنى = 6',
-				max: 'كلمة المرور الخاصة بك طويلة جدًا الحد الأقصى = 10'
+				min: $t('form.msg_password_min') + ' 6',
+				max: $t('form.msg_password_max') + ' 10'
 			},
 			prefix: {
 				tag: 'div',
@@ -136,9 +137,10 @@
 
 {#if status === 200}
 	<div role="alert" class="alert alert-success mt-6">
-		<span
-			>{`تم إنشاء حسابك بالبريد الإلكتروني ${data.email} بنجاح. لتفعيله، ما عليك سوى نسخ الرمز المكون من 6 أرقام من البريد الإلكتروني المرسل إليك. إذا كانت لديك أي أسئلة، تواصل مع فريق الدعم لدينا.`}</span
-		>
+		<span>
+			تم إنشاء حسابك بالبريد الإلكتروني بنجاح. لتفعيله، ما عليك سوى نسخ الرمز المكون من 6 أرقام من
+			البريد الإلكتروني المرسل إليك. إذا كانت لديك أي أسئلة، تواصل مع فريق الدعم لدينا.
+		</span>
 	</div>
 {:else}
 	<Formly
@@ -146,11 +148,11 @@
 		{form_name}
 		on:submit={onSubmit}
 		btnSubmit={{
-			text: 'اشتراك',
+			text: $t('form.submit'),
 			classes: ['btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary']
 		}}
 		btnReset={{
-			text: 'الغاء',
+			text: $t('form.reset'),
 			classes: ['btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary']
 		}}
 	/>

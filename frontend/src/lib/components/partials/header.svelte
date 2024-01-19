@@ -42,7 +42,7 @@
 					tabindex="-1"
 					class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-96"
 				>
-					{#each questions as question}
+					{#each questions[$locale] as question}
 						<li>
 							<button on:click={async () => await onSelectQuestion(question)}>{question}</button>
 						</li>
@@ -57,7 +57,7 @@
 				<form method="POST" action="?/logout">
 					<button type="submit" class="text-red-400 btn-error" name="logout" value="true">
 						<span class="badge badge-xs badge-error"></span>
-						خروج
+						{$t('menu.logout')}
 					</button>
 				</form>
 			{:else}

@@ -13,7 +13,9 @@ async function main() {
 				lastname: p.author.lastname,
 				password: p.author.password,
 				email: p.author.email,
-				status: 1
+				status: 1,
+				code: '123456',
+				language: 'en'
 				// posts: {
 				// 	create: {
 				// 		title: p.title,

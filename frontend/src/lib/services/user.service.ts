@@ -1,6 +1,7 @@
 import * as argon2 from 'argon2';
 import prisma from '$lib/prisma';
-import type { UserCreateDto } from '$lib/dto/user.dto';
+import type { UserCreateDto, UserUpdateDto } from '$lib/dto/user.dto';
+import type { LanguageListEnum } from '$lib/enums';
 
 export default class UserService {
 	async create(input: UserCreateDto) {
@@ -14,9 +15,13 @@ export default class UserService {
 
 			return await prisma.user.create({
 				data: {
-					...input,
+					firstname: input.firstname,
+					lastname: input.lastname,
+					email: input.email,
 					password: hashedPassword,
-					status: 0
+					code: input.code,
+					status: 0,
+					language: 'en'
 				}
 			});
 		} catch (error) {
@@ -45,6 +50,17 @@ export default class UserService {
 		return prisma.user.findUnique({
 			where: {
 				email
+			}
+		});
+	}
+
+	async updateLanguage(id: number, language: LanguageListEnum) {
+		return await prisma.user.update({
+			where: {
+				id
+			},
+			data: {
+				language
 			}
 		});
 	}

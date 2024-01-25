@@ -7,9 +7,11 @@
 	<aside>
 		<p>
 			{$t('footer.copyright').replace('$$$', currentYear)}
-			<span class="badge badge-sm badge-secondary dark:badge-primary font-bold"
-				>{$t('footer.kamal')}</span
-			>
+			<a href="https://kamal.gg" target="_blank" rel="noopener noreferrer">
+				<span class="badge badge-sm badge-secondary dark:badge-primary font-bold"
+					>{$t('footer.kamal')}</span
+				>
+			</a>
 		</p>
 	</aside>
 </footer>

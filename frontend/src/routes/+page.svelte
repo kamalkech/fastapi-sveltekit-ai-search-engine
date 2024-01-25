@@ -3,6 +3,8 @@
 	import { removeCharacters } from '$lib/helper';
 	import type { PageData } from './$types';
 	import { t } from '$lib/translations';
+	import { enhance, type SubmitFunction } from '$app/forms';
+	import { page } from '$app/stores';
 
 	// Import components.
 	import IconLight from '$lib/components/icons/icon-light.svelte';
@@ -33,6 +35,7 @@
 		const theme = preference_is_dark ? 'dark' : 'light';
 		set_theme(theme);
 	});
+
 	// Search.
 	const search = async () => {
 		try {
@@ -107,9 +110,26 @@
 	};
 
 	// Toggle theme light/dark.
-	const toggle_theme = (): void => {
+	const toggle_theme = async (): Promise<void> => {
 		const theme = current_theme === 'light' ? 'dark' : 'light';
 		set_theme(theme);
+		// await fetch('/api/cookie', {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		'Content-Type': 'application/json'
+		// 	}
+		// });
+		// document.documentElement.setAttribute('data-theme', theme);
+		// current_theme = theme;
+	};
+
+	const submitUpdateTheme: SubmitFunction = ({ action }) => {
+		const theme = action.searchParams.get('theme');
+
+		if (theme) {
+			document.documentElement.setAttribute('data-theme', theme);
+			current_theme = theme;
+		}
 	};
 </script>
 
@@ -142,17 +162,25 @@
 			/>
 		</div>
 
-		<div class="buttons-actions">
-			<button
-				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
-				on:click={toggle_theme}
-			>
+		<div class="buttons-actions flex flex-row justify-center gap-2">
+			<form method="POST" use:enhance={submitUpdateTheme}>
 				{#if current_theme === 'light'}
-					<IconDark />
+					<button
+						class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+						formaction="/?/setTheme&theme=dark&redirectTo={$page.url.pathname}"
+					>
+						<IconDark />
+					</button>
 				{:else}
-					<IconLight />
+					<button
+						class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+						formaction="/?/setTheme&theme=light&redirectTo={$page.url.pathname}"
+					>
+						<IconLight />
+					</button>
 				{/if}
-			</button>
+			</form>
+
 			<button
 				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
 				on:click={search}

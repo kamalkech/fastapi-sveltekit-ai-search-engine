@@ -1,13 +1,22 @@
 import nodemailer from 'nodemailer';
 
 export class MailService {
+	// private transporter = nodemailer.createTransport({
+	// 	host: 'smtp.gmail.com',
+	// 	port: 465, // 587,
+	// 	secure: true,
+	// 	auth: {
+	// 		user: 'z3878908@gmail.com',
+	// 		pass: 'cnkssnhbsjbfnhlu'
+	// 	}
+	// });
+
 	private transporter = nodemailer.createTransport({
-		host: 'smtp.gmail.com',
-		port: 465, // 587,
-		secure: true,
+		host: 'live.smtp.mailtrap.io',
+		port: 587,
 		auth: {
-			user: 'z3878908@gmail.com',
-			pass: 'cnkssnhbsjbfnhlu'
+			user: 'api',
+			pass: '3ca9e48c432bb334c215cf63417b57d0'
 		}
 	});
 

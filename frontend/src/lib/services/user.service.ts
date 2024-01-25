@@ -1,9 +1,9 @@
 import * as argon2 from 'argon2';
 import prisma from '$lib/prisma';
-import type { UserCreateDto, UserUpdateDto } from '$lib/dto/user.dto';
+import type { UserCreateDto } from '$lib/dto/user.dto';
 import type { LanguageListEnum } from '$lib/enums';
 
-export default class UserService {
+export class UserService {
 	async create(input: UserCreateDto) {
 		try {
 			const user = await this.getByEmail(input.email);
@@ -61,6 +61,17 @@ export default class UserService {
 			},
 			data: {
 				language
+			}
+		});
+	}
+
+	async active(email: string, code: string) {
+		return await prisma.user.update({
+			where: {
+				email
+			},
+			data: {
+				code
 			}
 		});
 	}

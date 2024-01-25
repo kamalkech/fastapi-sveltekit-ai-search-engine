@@ -54,8 +54,8 @@ async def search_stream(
     llm = ChatOpenAI(
         openai_api_key=OPENAI_KEY,
         temperature=0,
-        model="gpt-3.5-turbo",
-        # model="gpt-4-1106-preview",
+        # model="gpt-3.5-turbo",
+        model="gpt-4-1106-preview",
         streaming=True,
         max_tokens=1000
     )

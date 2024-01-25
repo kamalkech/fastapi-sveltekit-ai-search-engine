@@ -16,12 +16,11 @@ export async function POST({ request, cookies }) {
 			maxAge: 60 * 60 * 24 // 1 day
 		});
 
-		// await new Promise((f) => setTimeout(f, 5000)); // sleep for 5 seconds
 		return new Response(JSON.stringify({ token }), {
 			status: 200
 		});
 	} catch (error: any) {
-		await new Promise((f) => setTimeout(f, 5000)); // sleep for 5 seconds
+		// await new Promise((f) => setTimeout(f, 5000)); // sleep for 5 seconds
 		return new Response(JSON.stringify(error.message), {
 			status: 500
 		});

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from langchain.agents import AgentType, initialize_agent, load_tools
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferWindowMemory
-from langchain.schema import SystemMessage
+from langchain.schema import SystemMessage, chat_history
 from app.settings import Settings
 
 settings = Settings()
@@ -21,6 +21,8 @@ router = APIRouter()
 class Query(BaseModel):
     """...."""
     text: str
+    chat_history: list
+    lng: str
 
 
 @router.post("/")
@@ -30,8 +32,25 @@ async def search_stream(
     """...."""
     # Get body params.
     text = query.text
+    chat_history = query.chat_history
+    lng = query.lng
+    
+    print(lng)
 
-    # initialize the agent (we need to do this for the callbacks)
+    if (lng == "ar"):
+        prompt_content = "أنت مساعد بحث على الويب و إسمك 'زييا' ومهمتك الحصول على نتائج البحث والتأكد من ترجمة الإجابة إلى اللغة العربية. في بداية أي محادثة قم بتقديم نفسك.";
+        agent_prefix = "أنت مساعد مفيد للبحث على الويب وتأكد من الإجابة باللغة العربية"
+    else:
+        prompt_content = "You are a web search assistant, and your name is 'Zeia'. At the beginning of any conversation, introduce yourself."
+        agent_prefix = "You are a helpful web search assistant, ensuring answers."
+
+    memory = ConversationBufferWindowMemory(
+        memory_key="chat_history",
+        k=20,
+        return_messages=True,
+        output_key="output"
+    )
+
     llm = ChatOpenAI(
         openai_api_key=OPENAI_KEY,
         temperature=0,
@@ -41,17 +60,10 @@ async def search_stream(
         max_tokens=1000
     )
 
-    memory = ConversationBufferWindowMemory(
-        memory_key="chat_history",
-        k=10,
-        return_messages=True,
-        output_key="output"
-    )
-
     params = {
         "engine": "google",
         "gl": "us",
-        "hl": "ar",
+        "hl": lng,
     }
 
     tools = load_tools(
@@ -59,15 +71,20 @@ async def search_stream(
         llm=llm,
         serper_api_key=SERPER_API_KEY,
         params=params,
-        description="a search engine for Arabic",
+        description="a search engine for web search assistant",
     )
-
-    prompt_content = "أنت مساعد بحث على الويب و إسمك 'زييا' ومهمتك الحصول على نتائج البحث والتأكد من ترجمة الإجابة إلى اللغة العربية. في بداية أي محادثة قم بتقديم نفسك.";
 
     system_message = SystemMessage(
         content=prompt_content
     )
 
+
+    # map chat_history push to memoery using save_context
+    for chat in chat_history:
+        print(chat)
+        memory.save_context({"input": chat['input']}, {"output": chat['output']})
+
+    # initialize the agent (we need to do this for the callbacks)
     agent = initialize_agent(
         agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
         tools=tools,
@@ -80,7 +97,7 @@ async def search_stream(
         handle_parsing_errors=True,
         system_message=system_message,
         agent_kwargs={
-            'prefix': "أنت مساعد مفيد للبحث على الويب وتأكد من الإجابة باللغة العربية.",
+            'prefix': agent_prefix,
             "system_message": system_message.content
         }
     )

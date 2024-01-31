@@ -1,18 +1,26 @@
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
 	try {
 		const client = new TextToSpeechClient();
 		const { text } = await request.json();
+		const lng = cookies.get('lng') ?? 'en';
+
+		let languageCode = 'en-US';
+		let name = 'en-US-Neural2-G';
+		if (lng === 'ar') {
+			languageCode = 'ar-XA';
+			name = 'ar-XA-Standard-D';
+		}
 
 		// Construct the request
 		const data = {
 			input: { text: text },
 			// Select the language and SSML voice gender (optional)
 			voice: {
-				languageCode: 'ar-XA',
 				// ssmlGender: 'NEUTRAL',
-				name: 'ar-XA-Standard-D'
+				languageCode,
+				name
 			},
 			// select the type of audio encoding
 			audioConfig: {

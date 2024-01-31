@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Chat {
+  id        Int      @id @default(autoincrement())
+  input     String?
+  output    String?
+  userId    Int?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id        Int    @id @default(autoincrement())
+  email     String @unique
+  password  String
+  firstname String
+  lastname  String
+  status    Int
+  code      String
+  language  String
+  chats     Chat[]
+}

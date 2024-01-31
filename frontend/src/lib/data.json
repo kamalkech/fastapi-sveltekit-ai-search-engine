@@ -1,0 +1,26 @@
+[
+	{
+		"id": 1,
+		"author": {
+			"firstname": "Alice",
+			"lastname": "Alice",
+			"email": "alice@prisma.io",
+			"password": "12356"
+		},
+		"title": "Join the Prisma Slack",
+		"content": "https://slack.prisma.io",
+		"published": true
+	},
+	{
+		"id": 2,
+		"author": {
+			"firstname": "Nilu",
+			"lastname": "Nilu",
+			"email": "nilu@prisma.io",
+			"password": "12356"
+		},
+		"title": "Follow Prisma on Twitter",
+		"content": "https://www.twitter.com/prisma",
+		"published": true
+	}
+]

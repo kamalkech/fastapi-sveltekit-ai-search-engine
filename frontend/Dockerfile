@@ -21,13 +21,13 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
 # RUN apt-get update && apt-get install -y google-cloud-sdk
 
 WORKDIR /app
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 sveltekit
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 sveltekit
 COPY --from=builder /app/build build/
 COPY --from=builder /app/node_modules node_modules/
 COPY package.json ./
 COPY --chown=sveltekit:nodejs --from=builder /app/ ./
-USER sveltekit
+# USER sveltekit
 EXPOSE 3000
 ENV NODE_ENV=production
 CMD [ "sh", "-c", "PORT=3000 node build" ]

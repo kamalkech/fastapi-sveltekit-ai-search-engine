@@ -2,16 +2,6 @@ import { MAILTRAP_USER, MAILTRAP_PASS } from '$env/static/private';
 import nodemailer from 'nodemailer';
 
 export class MailService {
-	// private transporter = nodemailer.createTransport({
-	// 	host: 'smtp.gmail.com',
-	// 	port: 465, // 587,
-	// 	secure: true,
-	// 	auth: {
-	// 		user: 'z3878908@gmail.com',
-	// 		pass: 'cnkssnhbsjbfnhlu'
-	// 	}
-	// });
-
 	private transporter = nodemailer.createTransport({
 		host: 'live.smtp.mailtrap.io',
 		port: 587,

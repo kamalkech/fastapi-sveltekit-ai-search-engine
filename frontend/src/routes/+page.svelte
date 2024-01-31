@@ -208,9 +208,9 @@
 </div>
 
 <!-- Form signup and signin -->
-{#if !user}
-	<FormSigninSignUp />
-{/if}
+<!-- {#if !user} -->
+<!-- 	<FormSigninSignUp /> -->
+<!-- {/if} -->
 
 <style>
 	.card.image-full:before {

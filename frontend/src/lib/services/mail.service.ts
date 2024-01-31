@@ -1,3 +1,4 @@
+import { MAILTRAP_USER, MAILTRAP_PASS } from '$env/static/private';
 import nodemailer from 'nodemailer';
 
 export class MailService {
@@ -15,8 +16,8 @@ export class MailService {
 		host: 'live.smtp.mailtrap.io',
 		port: 587,
 		auth: {
-			user: 'api',
-			pass: '3ca9e48c432bb334c215cf63417b57d0'
+			user: MAILTRAP_USER,
+			pass: MAILTRAP_PASS
 		}
 	});
 

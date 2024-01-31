@@ -1,5 +1,4 @@
-import prisma from '$lib/prisma';
-import ChatService from '$lib/services/chat.service';
+import { ChatService } from '$lib/services/chat.service';
 
 export async function GET({ locals }) {
 	try {

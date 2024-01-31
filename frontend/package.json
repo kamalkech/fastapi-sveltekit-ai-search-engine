@@ -47,8 +47,8 @@
 	"type": "module",
 	"dependencies": {
 		"@google-cloud/text-to-speech": "^5.0.1",
-		"@prisma/client": "^5.8.0",
-		"argon2": "^0.31.2",
+		"@prisma/client": "^5.8.1",
+		"bcryptjs": "^2.4.3",
 		"jsonwebtoken": "^9.0.2",
 		"nodemailer": "^6.9.8",
 		"openai": "^4.24.1",

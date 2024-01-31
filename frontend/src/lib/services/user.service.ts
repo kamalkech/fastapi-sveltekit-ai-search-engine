@@ -1,4 +1,4 @@
-import * as argon2 from 'argon2';
+import bcrypt from 'bcryptjs';
 import prisma from '$lib/prisma';
 import type { UserCreateDto } from '$lib/dto/user.dto';
 import type { LanguageListEnum } from '$lib/enums';
@@ -11,7 +11,7 @@ export class UserService {
 				throw new Error('User already exists');
 			}
 
-			const hashedPassword = await argon2.hash(input.password);
+			const hashedPassword = await bcrypt.hash(input.password, 10);
 
 			return await prisma.user.create({
 				data: {

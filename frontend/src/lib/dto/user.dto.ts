@@ -4,13 +4,22 @@ export class UserCreateDto {
 	email: string;
 	password: string;
 	code: string;
+	status: number;
 
-	constructor(firstname: string, lastname: string, email: string, password: string, code: string) {
+	constructor(
+		firstname: string,
+		lastname: string,
+		email: string,
+		password: string,
+		code: string,
+		status: number
+	) {
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.email = email;
 		this.password = password;
 		this.code = code;
+		this.status = status;
 	}
 }
 export class UserUpdateDto extends UserCreateDto {
@@ -22,9 +31,10 @@ export class UserUpdateDto extends UserCreateDto {
 		lastname: string,
 		email: string,
 		password: string,
-		code: string
+		code: string,
+		status: number
 	) {
-		super(firstname, lastname, email, password, code);
+		super(firstname, lastname, email, password, code, status);
 		this.id = id;
 	}
 }

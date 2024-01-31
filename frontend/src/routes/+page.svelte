@@ -16,6 +16,7 @@
 
 	export let data: PageData;
 	const { user } = data;
+	console.log('user', user);
 
 	let loading = false;
 	let query = '';
@@ -191,10 +192,6 @@
 					<IconArrowLeft />
 				{/if}
 			</button>
-
-			{#if user}
-				<p class="mt-6 text-xs text-center">{user.firstname} {user.lastname}</p>
-			{/if}
 		</div>
 
 		{#if loading}
@@ -211,7 +208,9 @@
 </div>
 
 <!-- Form signup and signin -->
-<FormSigninSignUp />
+{#if !user}
+	<FormSigninSignUp />
+{/if}
 
 <style>
 	.card.image-full:before {

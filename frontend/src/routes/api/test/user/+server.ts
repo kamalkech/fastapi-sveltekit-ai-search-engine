@@ -1,6 +1,5 @@
 import type { UserCreateDto } from '$lib/dto/user.dto';
-import prisma from '$lib/prisma';
-import UserService from '$lib/services/user.service';
+import { UserService } from '$lib/services';
 
 export async function GET() {
 	try {
@@ -12,13 +11,15 @@ export async function GET() {
 				lastname: 'test1',
 				email: 'test1@email.com',
 				password: 'test1234',
-				status: 0
+				code: 'test1234',
+				status: 1
 			},
 			{
 				firstname: 'test2',
 				lastname: 'test2',
 				email: 'test2@email.com',
 				password: 'test1234',
+				code: 'test1234',
 				status: 1
 			}
 		];

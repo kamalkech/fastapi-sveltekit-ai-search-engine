@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '$env/static/private';
-import ChatService from '$lib/services/chat.service';
+import { ChatService } from '$lib/services/chat.service';
 
 type ChatHistory = {
 	input: string;

@@ -13,10 +13,11 @@
 	import FormSigninSignUp from '$lib/components/forms/singin_signup.svelte';
 	import Header from '$lib/components/partials/header.svelte';
 	import Footer from '$lib/components/partials/footer.svelte';
+	import VoiceRecorder from '$lib/components/blocks/voice-recorder.svelte';
+	import WaveVisualizer from '$lib/components/blocks/WaveVisualizer.svelte';
 
 	export let data: PageData;
 	const { user } = data;
-	console.log('user', user);
 
 	let loading = false;
 	let query = '';
@@ -110,42 +111,33 @@
 		current_theme = theme;
 	};
 
-	// Toggle theme light/dark.
-	const toggle_theme = async (): Promise<void> => {
-		const theme = current_theme === 'light' ? 'dark' : 'light';
-		set_theme(theme);
-		// await fetch('/api/cookie', {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/json'
-		// 	}
-		// });
-		// document.documentElement.setAttribute('data-theme', theme);
-		// current_theme = theme;
-	};
-
-	const submitUpdateTheme: SubmitFunction = ({ action }) => {
+	// Update theme.
+	const submitUpdateTheme: SubmitFunction = ({ action }: any) => {
 		const theme = action.searchParams.get('theme');
-
 		if (theme) {
 			document.documentElement.setAttribute('data-theme', theme);
 			current_theme = theme;
 		}
+	};
+
+	// On finish request.
+	const onFinish = ({ detail }: any) => {
+		audioUrl = detail;
 	};
 </script>
 
 <Header {user} on:onSelectQuestion={onSelectQuestion} />
 
 <div
-	class="card w-80 h-80 image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20"
+	class="w-80 h-80 image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20"
 >
-	<div class="card-body items-center flex justify-center space-y-4">
+	<div class="card-body items-center flex justify-center space-y-6 mt-8">
 		<h2 class="card-title">
 			{$t(`circle.title`)}
 		</h2>
 
 		{#if loading}
-			<span class="loading loading-ring loading-lg absolute inset-x-30 -top-10"></span>
+			<span class="loading loading-ring loading-lg"></span>
 		{/if}
 
 		<div class="card-actions flex flex-col">
@@ -182,6 +174,8 @@
 				{/if}
 			</form>
 
+			<VoiceRecorder on:onfinish={onFinish} />
+
 			<button
 				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
 				on:click={search}
@@ -195,13 +189,17 @@
 		</div>
 
 		{#if loading}
-			<span class="loading loading-ring loading-lg absolute inset-x-30 -bottom-5"></span>
+			<span class="loading loading-ring loading-lg"></span>
 		{/if}
 	</div>
 
-	{#if audioUrl != ''}
-		<audio src={audioUrl} controls autoPlay class="w-full absolute -bottom-20" />
-	{/if}
+	<!-- audio -->
+	<div class="flex flex-col">
+		<WaveVisualizer height={80} />
+		<!-- {#if audioUrl != ''} -->
+		<audio src={audioUrl} controls autoPlay class="w-full" />
+		<!-- {/if} -->
+	</div>
 
 	<!-- footer -->
 	<Footer />

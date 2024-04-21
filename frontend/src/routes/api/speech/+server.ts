@@ -1,6 +1,6 @@
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
-export async function POST({ request, cookies }) {
+export async function POST({ request, cookies }: any) {
 	try {
 		const client = new TextToSpeechClient();
 		const { text } = await request.json();
@@ -33,7 +33,7 @@ export async function POST({ request, cookies }) {
 		};
 
 		// Performs the text-to-speech request
-		const response = await client.synthesizeSpeech(data);
+		const response: any = await client.synthesizeSpeech(data);
 		const buffer = Buffer.from(await response[0]?.audioContent);
 		const base64String = buffer.toString('base64');
 		const dataUrl = `data:audio/mp3;base64,${base64String}`;
@@ -48,3 +48,38 @@ export async function POST({ request, cookies }) {
 		});
 	}
 }
+
+// import { OPENAI_API_KEY } from '$env/static/private';
+// import OpenAI from 'openai';
+//
+// const openai = new OpenAI({
+// 	apiKey: OPENAI_API_KEY
+// });
+//
+// export async function POST({ request }: any) {
+// 	try {
+// 		const { text } = await request.json();
+// 		console.log('text', text);
+//
+// 		const mp3 = await openai.audio.speech.create({
+// 			model: 'tts-1',
+// 			voice: 'onyx', // "alloy",
+// 			input: text
+// 		});
+// 		const buffer = Buffer.from(await mp3.arrayBuffer());
+// 		const base64String = buffer.toString('base64');
+// 		const dataUrl = `data:audio/mp3;base64,${base64String}`;
+// 		console.log('dataUrl', dataUrl);
+//
+// 		return Response.json(
+// 			{ dataUrl },
+// 			{
+// 				status: 200
+// 			}
+// 		);
+// 	} catch (error: any) {
+// 		return Response.json(error.message, {
+// 			status: 500
+// 		});
+// 	}
+// }

@@ -8,6 +8,7 @@
 	let isRecording = false;
 	let mediaRecorder: any = null;
 	let chunks: any = [];
+	let loading = false;
 
 	const startRecording = () => {
 		navigator.mediaDevices
@@ -42,6 +43,9 @@
 
 	const transcribeAudioAndChat = async (file: any) => {
 		try {
+			loading = true;
+			dispatch('onloading', true);
+
 			const formData = new FormData();
 			formData.append('file', file, 'my-audio.wav');
 			const response = await axios.post('/api/transcribe', formData, {
@@ -50,43 +54,65 @@
 				}
 			});
 			const text = response?.data?.text || null;
+
 			if (text) {
+				// Dispatch.
+				dispatch('ontranscribe', text);
 				await askQuestion(text);
 			}
 		} catch (error) {
+			loading = false;
+			dispatch('onloading', false);
 			console.error(`Failed to transcribe text, error: ${error}`);
 		}
 	};
 
 	const askQuestion = async (text: string) => {
-		const response = await fetch('/api/search', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ text })
-		});
-		const data = await response.json();
-		console.log('data', data);
+		try {
+			const response = await fetch('/api/search', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ text })
+			});
+			const data = await response.json();
+			console.log('data', data);
 
-		if (data && data != '') {
-			await textToSpeech(data);
+			if (data && data != '') {
+				await textToSpeech(data);
+			}
+		} catch (error) {
+			loading = false;
+			dispatch('onloading', false);
+
+			console.error(`Failed to askQuestion, error: ${error}`);
 		}
 	};
 
 	// Convert text to speech.
 	const textToSpeech = async (text: string) => {
-		console.log('text', text);
-		const response = await fetch('/api/speech', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ text })
-		});
+		try {
+			loading = false;
+			dispatch('onloading', false);
 
-		const data = await response.json();
-		dispatch('onfinish', data);
+			console.log('text', text);
+			const response = await fetch('/api/speech', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ text })
+			});
+
+			const data = await response.json();
+
+			dispatch('onfinish', data);
+		} catch (error) {
+			loading = false;
+			dispatch('onloading', false);
+			console.error(`Failed to textToSpeech, error: ${error}`);
+		}
 	};
 
 	const handleButtonClick = () => {
@@ -102,10 +128,12 @@
 	<button
 		type="button"
 		class={`btn btn-sm btn-filled btn-neutral text-white
-          ${isRecording ? 'bg-red-500 hover:bg-red-500' : 'bg-indigo-600 hover:bg-indigo-500'}`}
+          ${isRecording ? 'bg-red-500 hover:bg-red-500' : 'bg-secondary hover:bg-fuchsia-500'}`}
 		on:click={handleButtonClick}
 	>
-		{#if isRecording}
+		{#if loading}
+			<span class="loading loading-ring w-5 h-5"></span>
+		{:else if isRecording}
 			<Icon src={StopCircle} aria-hidden="true" mini size="20" />
 		{:else}
 			<Icon src={Microphone} aria-hidden="true" mini size="20" />

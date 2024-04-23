@@ -120,6 +120,17 @@
 		}
 	};
 
+	// On loading.
+	const onLoading = ({ detail }: any) => {
+		console.log('onLoading', detail);
+		loading = detail;
+	};
+
+	// On transcript.
+	const onTranscribe = ({ detail }: any) => {
+		query = detail;
+	};
+
 	// On finish request.
 	const onFinish = ({ detail }: any) => {
 		audioUrl = detail;
@@ -132,13 +143,9 @@
 	class="w-80 h-80 image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20"
 >
 	<div class="card-body items-center flex justify-center space-y-6 mt-8">
-		<h2 class="card-title">
+		<h2 class="card-title text-white">
 			{$t(`circle.title`)}
 		</h2>
-
-		{#if loading}
-			<span class="loading loading-ring loading-lg"></span>
-		{/if}
 
 		<div class="card-actions flex flex-col">
 			<textarea
@@ -174,7 +181,11 @@
 				{/if}
 			</form>
 
-			<VoiceRecorder on:onfinish={onFinish} />
+			<VoiceRecorder
+				on:onloading={onLoading}
+				on:ontranscribe={onTranscribe}
+				on:onfinish={onFinish}
+			/>
 
 			<button
 				class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
@@ -187,14 +198,10 @@
 				{/if}
 			</button>
 		</div>
-
-		{#if loading}
-			<span class="loading loading-ring loading-lg"></span>
-		{/if}
 	</div>
 
 	<!-- audio -->
-	<div class="flex flex-col">
+	<div class="flex flex-col space-y-2">
 		<WaveVisualizer height={80} />
 		<!-- {#if audioUrl != ''} -->
 		<audio src={audioUrl} controls autoPlay class="w-full" />
@@ -206,9 +213,9 @@
 </div>
 
 <!-- Form signup and signin -->
-<!-- {#if !user} -->
-<!-- 	<FormSigninSignUp /> -->
-<!-- {/if} -->
+{#if !user}
+	<FormSigninSignUp />
+{/if}
 
 <style>
 	.card.image-full:before {

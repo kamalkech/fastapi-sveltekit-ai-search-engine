@@ -51,7 +51,7 @@
 			{/if}
 		</div>
 	</li>
-	<li class="btn-disabled">
+	<li class="btn-disableds">
 		<div class="dropdown dropdown-bottom dropdown-hover rounded-box text-sm flex justify-center">
 			{#if user}
 				<form method="POST" action="?/logout">
@@ -62,7 +62,7 @@
 				</form>
 			{:else}
 				<button
-					disabled={true}
+					disabled={false}
 					class="text-black dark:text-white"
 					on:click={() => document.getElementById('form_signup').showModal()}
 				>

@@ -55,7 +55,10 @@ async def search_stream(
         openai_api_key=OPENAI_KEY,
         temperature=0,
         # model="gpt-3.5-turbo",
-        model="gpt-4-1106-preview",
+        # model="gpt-4-1106-preview",
+        # model="gpt-4-turbo",
+        # model="gpt-3.5-turbo-0125",
+        model="gpt-3.5-turbo",
         streaming=True,
         max_tokens=1000
     )

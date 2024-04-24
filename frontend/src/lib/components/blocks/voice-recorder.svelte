@@ -9,6 +9,9 @@
 	let mediaRecorder: any = null;
 	let chunks: any = [];
 	let loading = false;
+	let audioUrl = '';
+
+	const BACKEND_URL = 'http://localhost:8000';
 
 	const startRecording = () => {
 		navigator.mediaDevices
@@ -48,70 +51,27 @@
 
 			const formData = new FormData();
 			formData.append('file', file, 'my-audio.wav');
-			const response = await axios.post('/api/transcribe', formData, {
+			const response = await axios.post(BACKEND_URL + '/search_stream', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
-				}
+				},
+				responseType: 'blob'
 			});
-			const text = response?.data?.text || null;
 
-			if (text) {
+			if (response) {
+				audioUrl = URL.createObjectURL(response.data);
+				// new Audio(audioUrl).play();
+
 				// Dispatch.
-				dispatch('ontranscribe', text);
-				await askQuestion(text);
+				// dispatch('ontranscribe', text);
+				// await askQuestion(text);
 			}
+			loading = false;
+			dispatch('onloading', false);
 		} catch (error) {
 			loading = false;
 			dispatch('onloading', false);
 			console.error(`Failed to transcribe text, error: ${error}`);
-		}
-	};
-
-	const askQuestion = async (text: string) => {
-		try {
-			const response = await fetch('/api/search', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ text })
-			});
-			const data = await response.json();
-			console.log('data', data);
-
-			if (data && data != '') {
-				await textToSpeech(data);
-			}
-		} catch (error) {
-			loading = false;
-			dispatch('onloading', false);
-
-			console.error(`Failed to askQuestion, error: ${error}`);
-		}
-	};
-
-	// Convert text to speech.
-	const textToSpeech = async (text: string) => {
-		try {
-			loading = false;
-			dispatch('onloading', false);
-
-			console.log('text', text);
-			const response = await fetch('/api/speech', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ text })
-			});
-
-			const data = await response.json();
-
-			dispatch('onfinish', data);
-		} catch (error) {
-			loading = false;
-			dispatch('onloading', false);
-			console.error(`Failed to textToSpeech, error: ${error}`);
 		}
 	};
 
@@ -138,5 +98,6 @@
 		{:else}
 			<Icon src={Microphone} aria-hidden="true" mini size="20" />
 		{/if}
+		<!-- <audio src={audioUrl} controls autoPlay class="w-full" /> -->
 	</button>
 </div>

@@ -63,6 +63,7 @@
 				// new Audio(audioUrl).play();
 
 				// Dispatch.
+				dispatch('onfinish', audioUrl);
 				// dispatch('ontranscribe', text);
 				// await askQuestion(text);
 			}

@@ -6,20 +6,21 @@ from google.cloud import texttospeech
 
 client = texttospeech.TextToSpeechClient()
 
+
 def text2speechgoogle(text, lng):
     input_text = texttospeech.SynthesisInput(text=text)
 
-    languageCode = 'en-US';
-    name = 'en-US-Neural2-G';
+    language_code = 'en-US'
+    name = 'en-US-Neural2-G'
 
     if (lng == "ar"):
-        languageCode = 'ar-XA';
-        name = 'ar-XA-Standard-D';
+        language_code = 'ar-XA'
+        name = 'ar-XA-Standard-D'
 
     # Note: the voice can also be specified by name.
     # Names of voices can be retrieved with client.list_voices().
     voice = texttospeech.VoiceSelectionParams(
-        language_code=languageCode,
+        language_code=language_code,
         name=name,
     )
 
@@ -29,9 +30,9 @@ def text2speechgoogle(text, lng):
     )
 
     response = client.synthesize_speech(
-        request={"input": input_text, "voice": voice, "audio_config": audio_config}
+        request={"input": input_text, "voice": voice,
+                 "audio_config": audio_config}
     )
-
 
     return StreamingResponse(
         iter([response.audio_content]),

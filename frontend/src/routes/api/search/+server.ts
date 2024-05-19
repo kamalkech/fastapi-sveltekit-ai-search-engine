@@ -15,17 +15,22 @@ export async function POST({ request, locals, cookies }: any) {
 		const chatService = new ChatService();
 
 		// Get last 10 history user.
+		let chats: any[] = [];
 		const chat_history: ChatHistory[] = [];
+
 		if (user) {
-			const chats = await chatService.getAllByUser(user.id);
-			if (chats.length > 0) {
-				chats.map((chat: { input: string; output: string }) => {
-					chat_history.push({
-						input: chat.input,
-						output: chat.output
-					});
+			chats = await chatService.getAllByUser(user.id);
+		} else {
+			chats = await chatService.getAll();
+		}
+
+		if (chats.length > 0) {
+			chats.map((chat: { input: string; output: string }) => {
+				chat_history.push({
+					input: chat.input,
+					output: chat.output
 				});
-			}
+			});
 		}
 
 		const body = JSON.stringify({

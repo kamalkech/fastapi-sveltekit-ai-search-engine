@@ -4,7 +4,7 @@
 import os
 # import io
 from openai import OpenAI
-from fastapi import HTTPException,  Response
+from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 
 from app.settings import Settings

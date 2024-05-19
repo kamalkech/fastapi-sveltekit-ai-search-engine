@@ -8,3 +8,4 @@ langchain
 langchain-community
 openai
 python-multipart
+google-cloud-texttospeech

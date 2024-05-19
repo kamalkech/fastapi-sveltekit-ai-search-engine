@@ -25,4 +25,14 @@ export class ChatService {
 			}
 		});
 	}
+
+	async getAll(limit: number = 10): Promise<any> {
+		return await prisma.chat.findMany({
+			skip: 0,
+			take: limit,
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+	}
 }

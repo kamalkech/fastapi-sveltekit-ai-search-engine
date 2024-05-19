@@ -1,19 +1,15 @@
 """..."""
 
 import os
-from fastapi import Body, APIRouter, File, UploadFile
-from typing import Annotated
-from pydantic import BaseModel
-from langchain.agents import AgentType, initialize_agent, load_tools
-from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferWindowMemory
-from langchain.schema import SystemMessage, chat_history
-from app.settings import Settings
+
+from fastapi import APIRouter, File, UploadFile
 
 from app.routers.speech2text import speech2text
 from app.routers.text2llm import text2llm
-from app.routers.text2speech import text2speech
+
+# from app.routers.text2speech import text2speech
 from app.routers.text2speechgoogle import text2speechgoogle
+from app.settings import Settings
 
 settings = Settings()
 OPENAI_KEY = settings.OPENAI_KEY
@@ -22,6 +18,7 @@ SERPER_API_KEY = settings.SERPER_API_KEY
 os.environ["SERPER_API_KEY"] = SERPER_API_KEY
 
 router = APIRouter()
+
 
 @router.post("/")
 async def create_upload_file(file: UploadFile = File(...)):
@@ -57,7 +54,7 @@ async def create_upload_file(file: UploadFile = File(...)):
 #     text = query.text
 #     chat_history = query.chat_history
 #     lng = query.lng
-#     
+#
 #     print(lng)
 #
 #     if (lng == "ar"):

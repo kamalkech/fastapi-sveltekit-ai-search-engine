@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { redirect, type Actions } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async (event) => {
-	const user = event.locals.user;
+	const user = event.locals?.user;
 
 	return {
 		user

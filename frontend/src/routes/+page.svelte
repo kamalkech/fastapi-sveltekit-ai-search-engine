@@ -3,7 +3,8 @@
 	import { removeCharacters } from '$lib/helper';
 	import type { PageData } from './$types';
 	import { t } from '$lib/translations';
-	import { enhance, type SubmitFunction } from '$app/forms';
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import { page } from '$app/stores';
 
 	// Import components.
@@ -135,6 +136,11 @@
 	const onFinish = ({ detail }: any) => {
 		audioUrl = detail;
 	};
+
+	const onTap = (e: Event) => {
+		const target = e.target as HTMLTextAreaElement;
+		query = target.value;
+	};
 </script>
 
 <Header {user} on:onSelectQuestion={onSelectQuestion} />
@@ -153,7 +159,7 @@
 				class="textarea textarea-bordered border-pink-900 dark:border-sky-900 w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
 				placeholder={$t(`circle.placeholder`)}
 				value={query}
-				on:input={(e) => (query = e.target.value)}
+				on:input={onTap}
 				on:keydown={(e) => {
 					if (e.key === 'Enter') {
 						search();

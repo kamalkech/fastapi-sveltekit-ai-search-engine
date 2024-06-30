@@ -2,6 +2,7 @@
 	import { Icon, Microphone, StopCircle } from 'svelte-hero-icons';
 	import axios from 'axios';
 	import { createEventDispatcher } from 'svelte';
+	import { locale } from '$lib/translations';
 
 	const dispatch = createEventDispatcher();
 
@@ -49,7 +50,11 @@
 			loading = true;
 			dispatch('onloading', true);
 
+			const lng = $locale;
+			console.log('lng', lng);
+
 			const formData = new FormData();
+			formData.append('lng', lng);
 			formData.append('file', file, 'my-audio.wav');
 			const response = await axios.post(BACKEND_URL + '/search_stream', formData, {
 				headers: {

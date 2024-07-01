@@ -1,0 +1,139 @@
+<script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+
+	let audioContext: AudioContext;
+	let analyser: AnalyserNode;
+	let dataArray: Uint8Array;
+	let bufferLength: number;
+	let audioSource: MediaStreamAudioSourceNode;
+	let canvas: HTMLCanvasElement;
+	let canvasContext: CanvasRenderingContext2D | null = null;
+	let stream: MediaStream | null = null;
+	let isStarted = false;
+
+	onMount(() => {
+		setupCanvas();
+	});
+
+	onDestroy(() => {
+		stopMicrophone();
+	});
+
+	function setupAudioContext(): void {
+		const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+		audioContext = new AudioContext();
+		analyser = audioContext.createAnalyser();
+		analyser.fftSize = 256;
+		bufferLength = analyser.frequencyBinCount;
+		dataArray = new Uint8Array(bufferLength);
+	}
+
+	function setupCanvas(): void {
+		canvas = document.querySelector('canvas') as HTMLCanvasElement;
+		canvasContext = canvas.getContext('2d');
+		if (canvasContext) {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		}
+	}
+
+	async function startVisualizer(): Promise<void> {
+		if (isStarted) return;
+
+		setupAudioContext();
+		await startMicrophone();
+		draw();
+		isStarted = true;
+	}
+
+	async function startMicrophone(): Promise<void> {
+		try {
+			stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+			audioSource = audioContext.createMediaStreamSource(stream);
+			audioSource.connect(analyser);
+		} catch (err) {
+			console.error('Error accessing microphone:', err);
+		}
+	}
+
+	function stopMicrophone(): void {
+		if (stream) {
+			stream.getTracks().forEach((track) => track.stop());
+		}
+		if (audioContext) {
+			audioContext.close();
+		}
+	}
+
+	function draw(): void {
+		requestAnimationFrame(draw);
+
+		analyser.getByteFrequencyData(dataArray);
+
+		if (canvasContext) {
+			canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+			canvasContext.fillStyle = 'rgba(0, 0, 0, 0.1)';
+			canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+
+			const centerX = canvas.width / 2;
+			const centerY = canvas.height / 2;
+			const radius = 150;
+			const bars = bufferLength;
+			const barWidth = 2;
+
+			for (let i = 0; i < bars; i++) {
+				const rads = (Math.PI * 2) / bars;
+				const barLength = dataArray[i] * 0.5;
+
+				const x = centerX + Math.cos(rads * i) * (radius + barLength);
+				const y = centerY + Math.sin(rads * i) * (radius + barLength);
+
+				const xEnd = centerX + Math.cos(rads * i) * radius;
+				const yEnd = centerY + Math.sin(rads * i) * radius;
+
+				canvasContext.strokeStyle = `rgb(${255 - dataArray[i]}, 50, 255)`;
+				canvasContext.lineWidth = barWidth;
+				canvasContext.beginPath();
+				canvasContext.moveTo(xEnd, yEnd);
+				canvasContext.lineTo(x, y);
+				canvasContext.stroke();
+			}
+		}
+	}
+</script>
+
+<canvas></canvas>
+<div class="centered-text">
+	<span>AUDIO</span><br />
+	<span>VISUALIZER</span>
+</div>
+<button on:click={startVisualizer}>Start Visualizer</button>
+
+<style>
+	canvas {
+		display: block;
+		width: 100vw;
+		height: 100vh;
+		background: black;
+	}
+
+	.centered-text {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+		color: white;
+		font-size: 2em;
+	}
+
+	button {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		padding: 10px 20px;
+		font-size: 1em;
+		cursor: pointer;
+	}
+</style>
+

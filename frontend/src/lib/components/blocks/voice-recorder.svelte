@@ -51,8 +51,6 @@
 			dispatch('onloading', true);
 
 			const lng = $locale;
-			console.log('lng', lng);
-
 			const formData = new FormData();
 			formData.append('lng', lng);
 			formData.append('file', file, 'my-audio.wav');

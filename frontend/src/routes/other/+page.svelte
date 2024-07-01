@@ -1,7 +1,41 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { onDestroy, onMount } from 'svelte';
+	import { removeCharacters } from '$lib/helper';
+	import type { PageData } from './$types';
+	import { t } from '$lib/translations';
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { page } from '$app/stores';
 	import axios from 'axios';
+
+	// Import components.
+	import IconLight from '$lib/components/icons/icon-light.svelte';
+	import IconDark from '$lib/components/icons/icon-dark.svelte';
+	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
+	import Header from '$lib/components/partials/header.svelte';
+	import Footer from '$lib/components/partials/footer.svelte';
+	import VoiceRecorder from '$lib/components/blocks/voice-recorder.svelte';
+	import { writable } from 'svelte/store';
+	import { Icon, Microphone, StopCircle } from 'svelte-hero-icons';
+
+	export let data: PageData;
+	const { user } = data;
+
+	let loading = false;
+	let query = '';
+	let text = '';
+	let content = '';
+	$: content = text;
+	let audioUrl = '';
+	let current_theme: string = 'dark';
+
+	// Choose a selected questions.
+	const onSelectQuestion = async (event: any) => {};
+
+	const onLoading = async (event: any) => {};
+	const onTranscribe = async (event: any) => {};
+	const onFinish = async (event: any) => {};
+	const search = async (event: any) => {};
 
 	let isRecording = writable(false);
 	let audioURL = writable<string | null>(null);
@@ -28,31 +62,19 @@
 	const setupCanvas = () => {
 		const ctx = canvas?.getContext('2d');
 		if (ctx && canvas) {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
+			canvas.width = 900; //window.innerWidth;
+			canvas.height = 400; // window.innerHeight;
 			drawStaticVisualizer(ctx, canvas.width, canvas.height);
 		}
 	};
 
 	const drawStaticVisualizer = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-		ctx.clearRect(0, 0, width, height);
-		ctx.fillStyle = '#000';
-		ctx.fillRect(0, 0, width, height);
-
 		const centerX = width / 2;
 		const centerY = height / 2;
 		const radius = 150;
 
 		ctx.beginPath();
 		ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-		ctx.strokeStyle = '#fff';
-		ctx.lineWidth = 2;
-		ctx.stroke();
-		ctx.font = '20px Arial';
-		ctx.fillStyle = '#fff';
-		ctx.textAlign = 'center';
-		ctx.fillText('AI Assistant Speaker', centerX, centerY);
-		ctx.fillText('by MorrocanDevelop', centerX, centerY + 30);
 	};
 
 	const setupAudioContext = () => {
@@ -89,8 +111,8 @@
 		analyser.getByteFrequencyData(dataArray);
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.fillStyle = '#000';
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		// ctx.fillStyle = '#000';
+		// ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 		const centerX = canvas.width / 2;
 		const centerY = canvas.height / 2;
@@ -132,7 +154,7 @@
 
 		mediaRecorder.onstop = () => {
 			const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-			sendAudioToBackend(audioBlob);
+			sendAudioToBackend(audioBlob); // TODO: enable it
 			audioURL.set(URL.createObjectURL(audioBlob));
 		};
 
@@ -186,29 +208,102 @@
 	};
 </script>
 
-<canvas bind:this={canvas} width="600" height="600"></canvas>
-<div>
-	{#if $isRecording}
-		<button on:click={stopRecording}>Stop Recording</button>
-	{:else}
-		<button on:click={startRecording}>Start Recording</button>
-	{/if}
+<Header {user} on:onSelectQuestion={onSelectQuestion} />
+
+<div class="mt-4 w-full flex justify-center items-center">
+	<canvas bind:this={canvas} class="w-full h-auto fixed"> </canvas>
+	<div
+		class="w-96 h-96 relative image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20 space-y-6"
+	>
+		<div class="card-body items-center flex justify-center space-y-6 mt-16">
+			<h2 class="card-title text-white">
+				{$t(`circle.title`)}
+			</h2>
+
+			<div class="card-actions flex flex-col w-full">
+				<textarea
+					class="textarea w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
+					placeholder={$t(`circle.placeholder`)}
+				/>
+			</div>
+
+			<div class="buttons-actions flex flex-row justify-center gap-2">
+				<form method="POST">
+					{#if current_theme === 'light'}
+						<button
+							class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+							formaction="/?/setTheme&theme=dark&redirectTo={$page.url.pathname}"
+						>
+							<IconDark />
+						</button>
+					{:else}
+						<button
+							class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+							formaction="/?/setTheme&theme=light&redirectTo={$page.url.pathname}"
+						>
+							<IconLight />
+						</button>
+					{/if}
+				</form>
+
+				<!-- <VoiceRecorder -->
+				<!-- 	on:onloading={onLoading} -->
+				<!-- 	on:ontranscribe={onTranscribe} -->
+				<!-- 	on:onfinish={onFinish} -->
+				<!-- /> -->
+
+				<div class="z-50">
+					{#if $isRecording}
+						<button
+							class={`btn btn-sm btn-filled btn-neutral text-white bg-secondary hover:bg-fuchsia-500`}
+							on:click={stopRecording}
+						>
+							<Icon src={StopCircle} aria-hidden="true" mini size="20" />
+						</button>
+					{:else}
+						<button
+							class={`btn btn-sm btn-filled btn-neutral text-white bg-secondary hover:bg-fuchsia-500`}
+							on:click={startRecording}
+						>
+							<Icon src={Microphone} aria-hidden="true" mini size="20" />
+						</button>
+					{/if}
+				</div>
+
+				<button
+					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+					on:click={search}
+				>
+					{#if loading}
+						<span class="loading loading-ring w-5 h-5"></span>
+					{:else}
+						<IconArrowLeft />
+					{/if}
+				</button>
+			</div>
+		</div>
+
+		<!-- footer -->
+		<Footer />
+	</div>
 </div>
-{#if $audioURL}
-	<audio bind:this={audioElement} src={$audioURL} controls on:play={playAudioWithVisualizer}
-	></audio>
-{/if}
 
 <style>
-	canvas {
-		display: block;
-		margin: 20px auto;
-		background: black;
+	.card.image-full:before {
+		background-color: inherit;
 	}
-	div {
-		text-align: center;
+	.image-full {
+		background-image: url('/bg.png');
+		background-position: center;
+		background-size: cover;
+		opacity: 0.7;
 	}
-	button {
-		margin: 10px;
+	.card-actions {
+		opacity: 0.85;
+	}
+	:global(.invalid-feedback.error) {
+		font-size: 0.85rem !important;
+		margin-top: 0.5rem !important;
+		color: red;
 	}
 </style>

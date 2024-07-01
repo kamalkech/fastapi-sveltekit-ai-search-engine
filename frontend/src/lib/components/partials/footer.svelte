@@ -3,7 +3,7 @@
 	const currentYear = new Date().getFullYear();
 </script>
 
-<footer class="footer footer-center p-4 text-base-content">
+<footer class="footer footer-center absolute -bottom-36 p-4 text-base-content">
 	<aside>
 		<p>
 			{$t('footer.copyright').replace('$$$', currentYear)}

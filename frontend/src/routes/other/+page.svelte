@@ -51,8 +51,8 @@
 	const setupCanvas = () => {
 		const ctx = canvas?.getContext('2d');
 		if (ctx && canvas) {
-			canvas.width = 900; //window.innerWidth;
-			canvas.height = 400; // window.innerHeight;
+			canvas.width = window.innerWidth / 1.3;
+			canvas.height = window.innerHeight / 1.3;
 			drawStaticVisualizer(ctx, canvas.width, canvas.height);
 		}
 	};
@@ -198,7 +198,7 @@
 <div class="mt-4 w-full flex justify-center items-center">
 	<canvas bind:this={canvas} class="w-full h-auto fixed"> </canvas>
 	<div
-		class="w-96 h-96 relative image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20 space-y-6"
+		class="w-96 h-96 relative image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20 space-y-6 z-50 fixed"
 	>
 		<div class="card-body items-center flex justify-center space-y-6 mt-16">
 			<h2 class="card-title text-white">

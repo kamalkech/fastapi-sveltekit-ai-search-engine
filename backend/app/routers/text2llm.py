@@ -2,17 +2,11 @@
 
 import os
 
-from langchain.agents import (
-    AgentExecutor,
-    AgentType,
-    create_openai_functions_agent,
-    initialize_agent,
-    load_tools,
-)
+from langchain.agents import AgentType, initialize_agent
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.schema import SystemMessage
-from langchain.utilities.tavily_search import TavilySearchAPIWrapper
-from langchain_community.chat_models.openai import ChatOpenAI
+from langchain_community.agent_toolkits.load_tools import load_tools
+from langchain_openai import ChatOpenAI
 
 from app.settings import Settings
 

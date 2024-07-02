@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { removeCharacters } from '$lib/helper';
 	import type { PageData } from './$types';
 	import { t } from '$lib/translations';
-	import { enhance } from '$app/forms';
-	import type { SubmitFunction } from '@sveltejs/kit';
 	import { page } from '$app/stores';
 	import axios from 'axios';
 
@@ -14,28 +11,20 @@
 	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
 	import Header from '$lib/components/partials/header.svelte';
 	import Footer from '$lib/components/partials/footer.svelte';
-	import VoiceRecorder from '$lib/components/blocks/voice-recorder.svelte';
 	import { writable } from 'svelte/store';
 	import { Icon, Microphone, StopCircle } from 'svelte-hero-icons';
 
 	export let data: PageData;
-	const { user } = data;
+	const { user }: any = data;
 
 	let loading = false;
-	let query = '';
 	let text = '';
 	let content = '';
 	$: content = text;
-	let audioUrl = '';
 	let current_theme: string = 'dark';
 
 	// Choose a selected questions.
 	const onSelectQuestion = async (event: any) => {};
-
-	const onLoading = async (event: any) => {};
-	const onTranscribe = async (event: any) => {};
-	const onFinish = async (event: any) => {};
-	const search = async (event: any) => {};
 
 	let isRecording = writable(false);
 	let audioURL = writable<string | null>(null);
@@ -97,8 +86,9 @@
 			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 			audioSource = audioContext.createMediaStreamSource(stream);
 			audioSource.connect(analyser);
-		} catch (err) {
+		} catch (err: any) {
 			console.error('Error accessing microphone:', err);
+			throw new Error('Error accessing microphone:', err.message);
 		}
 	};
 
@@ -107,12 +97,8 @@
 		if (!ctx || !canvas) return;
 
 		animationId = requestAnimationFrame(drawVisualizer);
-
 		analyser.getByteFrequencyData(dataArray);
-
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		// ctx.fillStyle = '#000';
-		// ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 		const centerX = canvas.width / 2;
 		const centerY = canvas.height / 2;
@@ -154,7 +140,7 @@
 
 		mediaRecorder.onstop = () => {
 			const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-			sendAudioToBackend(audioBlob); // TODO: enable it
+			sendAudioToBackend(audioBlob);
 			audioURL.set(URL.createObjectURL(audioBlob));
 		};
 
@@ -185,13 +171,12 @@
 
 			if (response) {
 				const audioUrl = URL.createObjectURL(response.data);
-				console.log('Audio URL:', audioUrl);
 				audioElement = new Audio(audioUrl);
 				playAudioWithVisualizer();
 			}
-			console.log('Backend response:', response.data);
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error sending audio to backend:', error);
+			throw new Error('Error sending audio to backend:', error.message);
 		}
 	};
 
@@ -246,12 +231,6 @@
 					{/if}
 				</form>
 
-				<!-- <VoiceRecorder -->
-				<!-- 	on:onloading={onLoading} -->
-				<!-- 	on:ontranscribe={onTranscribe} -->
-				<!-- 	on:onfinish={onFinish} -->
-				<!-- /> -->
-
 				<div class="z-50">
 					{#if $isRecording}
 						<button
@@ -270,10 +249,7 @@
 					{/if}
 				</div>
 
-				<button
-					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
-					on:click={search}
-				>
+				<button class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary">
 					{#if loading}
 						<span class="loading loading-ring w-5 h-5"></span>
 					{:else}

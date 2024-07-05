@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     env_file: ./backend/.env
     ports:
-      - 3333:3333
+      - 5554:5554
     stdin_open: true
     tty: true
     networks:
@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
     # env_file: ./frontend/.env
     ports:
-      - 3000:3000
+      - 5555:5555
     stdin_open: true
     tty: true
     networks:

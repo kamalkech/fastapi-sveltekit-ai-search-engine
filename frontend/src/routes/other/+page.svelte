@@ -4,6 +4,7 @@
 	import { t } from '$lib/translations';
 	import { page } from '$app/stores';
 	import axios from 'axios';
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 	// Import components.
 	import IconLight from '$lib/components/icons/icon-light.svelte';
@@ -157,12 +158,11 @@
 
 	const sendAudioToBackend = async (audioBlob: Blob) => {
 		const formData = new FormData();
-		formData.append('lng', 'ar');
+		formData.append('lng', 'en');
 		formData.append('file', audioBlob, 'recording.wav');
 
 		try {
-			const BACKEND_URL = 'http://localhost:8000';
-			const response = await axios.post(BACKEND_URL + '/search_stream', formData, {
+			const response = await axios.post(PUBLIC_BACKEND_URL + '/search_stream', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				},

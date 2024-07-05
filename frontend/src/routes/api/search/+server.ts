@@ -1,4 +1,4 @@
-import { BACKEND_URL } from '$env/static/private';
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
 import { ChatService } from '$lib/services/chat.service';
 
 type ChatHistory = {
@@ -39,7 +39,7 @@ export async function POST({ request, locals, cookies }: any) {
 			chat_history
 		});
 
-		const response = await fetch(BACKEND_URL + '/search_stream', {
+		const response = await fetch(PUBLIC_BACKEND_URL + '/search_stream', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

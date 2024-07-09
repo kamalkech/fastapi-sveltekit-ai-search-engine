@@ -22,7 +22,7 @@
 	};
 </script>
 
-<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-4">
+<ul class="menu bg-base-200 lg:menu-horizontal rounded-box mb-4 z-50">
 	<li>
 		<div class="dropdown dropdown-bottom rounded-box text-sm flex justify-center">
 			<div

@@ -15,8 +15,6 @@ OPENAI_KEY = settings.OPENAI_KEY
 os.environ["OPENAI_KEY"] = OPENAI_KEY
 SERPER_API_KEY = settings.SERPER_API_KEY
 os.environ["SERPER_API_KEY"] = SERPER_API_KEY
-TAVILY_API_KEY = settings.TAVILY_API_KEY
-os.environ["TAVILY_API_KEY"] = TAVILY_API_KEY
 
 
 memory = ConversationBufferWindowMemory(
@@ -28,7 +26,7 @@ llm = ChatOpenAI(
     temperature=0,
     model="gpt-4o",
     streaming=True,
-    max_tokens=2000,
+    max_tokens=1000,
 )
 
 
@@ -72,6 +70,7 @@ async def text2llm(text, chat_history, lng):
     # initialize the agent (we need to do this for the callbacks)
     agent = initialize_agent(
         agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
+        # agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION,
         tools=tools,
         llm=llm,
         verbose=True,

@@ -31,8 +31,15 @@ async def create_upload_file(file: UploadFile = File(...), lng: str = Form(...))
     text = await speech2text(file)
     print(f"transcription: {text}")
 
+    chat_history = [
+        {
+            "input": "مرحبا انا اسمي سيف الدين",
+            "output": "مرحبا سيف الدين انا زييا كيف يمكنني مساعدتك ؟",
+        },
+    ]
+
     # text to llm
-    response = await text2llm(text, [], lng)
+    response = await text2llm(text, chat_history, lng)
 
     # text to speech
     # speech = text2speech(response)

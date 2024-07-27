@@ -26,7 +26,7 @@ llm = ChatOpenAI(
     temperature=0,
     model="gpt-4o",
     streaming=True,
-    max_tokens=1000,
+    max_tokens=1800,
 )
 
 

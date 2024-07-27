@@ -1,11 +1,11 @@
 """high level support for doing this and that."""
 
 import uvicorn
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 # Router
 from app.routers import search_stream
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -14,6 +14,8 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8080",
+    "https://0.0.0.0:3000",
+    "http://0.0.0.0:3000",
 ]
 
 app.add_middleware(

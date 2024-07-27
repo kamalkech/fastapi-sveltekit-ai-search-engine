@@ -23,4 +23,4 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/code/application_default_credentials.json
 COPY ./application_default_credentials.json /code/application_default_credentials.json
 
 # Command to run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5554"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3333"]

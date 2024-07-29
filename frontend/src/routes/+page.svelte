@@ -3,6 +3,7 @@
 	import type { PageData } from './$types';
 	import { t, locale } from '$lib/translations';
 	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import { page } from '$app/stores';
 	import axios from 'axios';
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
@@ -181,6 +182,8 @@
 	};
 
 	const sendAudioToBackend = async (audioBlob: Blob) => {
+		loading = true;
+
 		const formData = new FormData();
 		formData.append('lng', $locale);
 		formData.append('file', audioBlob, 'recording.wav');
@@ -196,9 +199,13 @@
 			if (response) {
 				audioUrl = URL.createObjectURL(response.data);
 				audioElement = new Audio(audioUrl);
-				playAudioWithVisualizer();
+				// playAudioWithVisualizer();
 			}
+
+			loading = false;
 		} catch (error: any) {
+			loading = false;
+
 			console.error('Error sending audio to backend:', error);
 			throw new Error('Error sending audio to backend:', error.message);
 		}
@@ -247,30 +254,30 @@
 	<div
 		class="w-96 h-96 relative image-full rounded-full border shadow-lg shadow-pink-500/40 border-pink-500/40 dark:shadow-blue-500/20 dark:border-blue-500/20 space-y-6 z-40 fixed"
 	>
-		<div class="card-body items-center flex justify-center space-y-6 mt-16">
+		<div class="card-body items-center flex justify-center space-y-12 mt-16">
 			<h2 class="card-title text-white">
 				{$t(`circle.title`)}
 			</h2>
 
-			<div class="card-actions flex flex-col w-full">
-				<textarea
-					class="textarea w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600"
-					placeholder={$t(`circle.placeholder`)}
-				/>
-			</div>
+			<!-- <div class="card-actions flex flex-col w-full"> -->
+			<!-- 	<textarea -->
+			<!-- 		class="textarea w-full rounded-md max-h-4 placeholder:italic placeholder:text-slate-400 dark:placeholder:text-gray-500 dark:text-gray-300 text-gray-600" -->
+			<!-- 		placeholder={$t(`circle.placeholder`)} -->
+			<!-- 	/> -->
+			<!-- </div> -->
 
 			<div class="buttons-actions flex flex-row justify-center gap-2">
 				<form method="POST" use:enhance={submitUpdateTheme}>
 					{#if current_theme === 'light'}
 						<button
-							class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+							class="btn rounded-full btn-filled btn-neutral dark:text-primary text-secondary"
 							formaction="/?/setTheme&theme=dark&redirectTo={$page.url.pathname}"
 						>
 							<IconDark />
 						</button>
 					{:else}
 						<button
-							class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
+							class="btn rounded-full btn-filled btn-neutral dark:text-primary text-secondary"
 							formaction="/?/setTheme&theme=light&redirectTo={$page.url.pathname}"
 						>
 							<IconLight />
@@ -291,21 +298,25 @@
 							class={`btn rounded-full btn-filled btn-neutral text-white bg-secondary hover:bg-fuchsia-500`}
 							on:click={startRecording}
 						>
-							<Icon src={Microphone} aria-hidden="true" mini size="20" />
+							{#if loading}
+								<span class="loading loading-ring w-5 h-5"></span>
+							{:else}
+								<Icon src={Microphone} aria-hidden="true" mini size="20" />
+							{/if}
 						</button>
 					{/if}
 				</div>
 
-				<button
-					class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary"
-					on:click={search}
-				>
-					{#if loading}
-						<span class="loading loading-ring w-5 h-5"></span>
-					{:else}
-						<IconArrowLeft />
-					{/if}
-				</button>
+				<!-- <button -->
+				<!-- 	class="btn btn-sm btn-filled btn-neutral dark:text-primary text-secondary" -->
+				<!-- 	on:click={search} -->
+				<!-- > -->
+				<!-- 	{#if loading} -->
+				<!-- 		<span class="loading loading-ring w-5 h-5"></span> -->
+				<!-- 	{:else} -->
+				<!-- 		<IconArrowLeft /> -->
+				<!-- 	{/if} -->
+				<!-- </button> -->
 
 				<!-- {#if audioUrl != ''} -->
 				<!-- 	<button -->
@@ -324,7 +335,7 @@
 		<!-- footer -->
 		{#if audioUrl}
 			<div class="footer footer-center absolute -bottom-20 text-base-content">
-				<audio src={audioUrl} bind:this={audioElement} controls class="w-full" />
+				<audio src={audioUrl} bind:this={audioElement} autoPlay controls class="w-full" />
 			</div>
 		{/if}
 		<Footer />

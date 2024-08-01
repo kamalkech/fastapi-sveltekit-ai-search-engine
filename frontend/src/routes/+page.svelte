@@ -298,6 +298,7 @@
 						<button
 							class={`btn rounded-full btn-filled btn-neutral text-white bg-secondary hover:bg-fuchsia-500`}
 							on:click={stopRecording}
+							disabled={loading}
 						>
 							<Icon src={StopCircle} aria-hidden="true" mini size="20" />
 						</button>
@@ -305,6 +306,7 @@
 						<button
 							class={`btn rounded-full btn-filled btn-neutral text-white bg-secondary hover:bg-fuchsia-500`}
 							on:click={startRecording}
+							disabled={loading}
 						>
 							{#if loading}
 								<span class="loading loading-ring w-5 h-5"></span>

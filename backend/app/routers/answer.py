@@ -20,6 +20,12 @@ os.environ["SERPER_API_KEY"] = SERPER_API_KEY
 router = APIRouter()
 
 
+@router.get("/")
+async def get_answer():
+    """..."""
+    return "Get answer"
+
+
 @router.post("/")
 async def create_upload_file(file: UploadFile = File(...), lng: str = Form(...)):
     """..."""

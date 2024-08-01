@@ -194,6 +194,7 @@
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				},
+				withCredentials: true, // Include this if you need to send cookies
 				responseType: 'blob'
 			});
 

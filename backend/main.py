@@ -27,16 +27,23 @@ app = FastAPI()
 # )
 
 origins = [
-    "https://zeia.ma",
     "https://www.zeia.ma",
+    "https://zeia.ma",  # Include this if you also use the apex domain
+    # You may want to include localhost for development
+    "http://localhost:3000",
+    "https://localhost:3000",  # Default SvelteKit dev server port
+    "http://127.0.0.1:3000",
+    "https://127.0.0.1:3000",  # Default SvelteKit dev server port
+    "http://backend:3000",
+    "https://backend:3000",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 

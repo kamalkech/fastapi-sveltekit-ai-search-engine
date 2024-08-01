@@ -6,19 +6,20 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { page } from '$app/stores';
 	import axios from 'axios';
-	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+	// import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 	// Import components.
 	import IconLight from '$lib/components/icons/icon-light.svelte';
 	import IconDark from '$lib/components/icons/icon-dark.svelte';
-	import IconArrowLeft from '$lib/components/icons/icon-arrow-left.svelte';
 	import Header from '$lib/components/partials/header.svelte';
 	import Footer from '$lib/components/partials/footer.svelte';
 	import { writable } from 'svelte/store';
-	import { Icon, Microphone, SpeakerWave, StopCircle } from 'svelte-hero-icons';
+	import { Icon, Microphone, StopCircle } from 'svelte-hero-icons';
 
 	export let data: PageData;
 	const { user }: any = data;
+
+	const PUBLIC_BACKEND_URL = 'https://api-test.zeia.ma';
 
 	let loading = false;
 	let text = '';
@@ -189,7 +190,7 @@
 		formData.append('file', audioBlob, 'recording.wav');
 
 		try {
-			const response = await axios.post(PUBLIC_BACKEND_URL + '/search_stream', formData, {
+			const response = await axios.post(PUBLIC_BACKEND_URL + '/answer', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				},

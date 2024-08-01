@@ -1,11 +1,11 @@
 """high level support for doing this and that."""
 
 import uvicorn
-
-# Router
-from app.routers import search_stream
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# Router
+from app.routers import answer, search_stream
 
 app = FastAPI()
 
@@ -27,6 +27,7 @@ app.add_middleware(
 )
 
 app.include_router(search_stream.router, prefix="/search_stream")
+app.include_router(answer.router, prefix="/answer")
 
 
 @app.get("/")

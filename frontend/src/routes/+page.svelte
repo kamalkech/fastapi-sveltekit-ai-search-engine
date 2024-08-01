@@ -287,6 +287,12 @@
 					{/if}
 				</form>
 
+				<img
+					src="/logo.png"
+					alt="logo"
+					class="mt-12 w-16 h-16 rounded-full shadow-lg shadow-indigo-500/50"
+				/>
+
 				<div class="z-50">
 					{#if $isRecording}
 						<button
